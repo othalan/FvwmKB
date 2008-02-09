@@ -1,0 +1,121 @@
+# Keyboard Bindings for Mod0
+
+# Letter Keys
+Key A               A $[Mod2] -
+Key B               A $[Mod2] -
+Key C               A $[Mod2] -
+Key D               A $[Mod2] -
+Key E               A $[Mod2] -
+Key F               A $[Mod2] -
+Key G               A $[Mod2] -
+Key H               A $[Mod2] -
+Key I               A $[Mod2] -
+Key J               A $[Mod2] -
+Key K               A $[Mod2] -
+Key L               A $[Mod2] -
+Key M               A $[Mod2] -
+Key N               A $[Mod2] -
+Key O               A $[Mod2] -
+Key P               A $[Mod2] -
+Key Q               A $[Mod2] -
+Key R               A $[Mod2] -
+Key S               A $[Mod2] -
+Key T               A $[Mod2] -
+Key U               A $[Mod2] -
+Key V               A $[Mod2] -
+Key W               A $[Mod2] -
+Key X               A $[Mod2] -
+Key Y               A $[Mod2] -
+Key Z               A $[Mod2] -
+
+# Number Keys
+Key 0               A $[Mod2] -
+Key 1               A $[Mod2] GotoPage 0 0
+Key 2               A $[Mod2] GotoPage 1 0
+Key 3               A $[Mod2] GotoPage 2 0
+Key 4               A $[Mod2] GotoPage 3 0
+Key 5               A $[Mod2] GotoPage 4 0
+Key 6               A $[Mod2] GotoPage 5 0
+Key 7               A $[Mod2] GotoPage 6 0
+Key 8               A $[Mod2] GotoPage 7 0
+Key 9               A $[Mod2] -
+
+# Function Keys
+Key F1              A $[Mod2] -
+Key F2              A $[Mod2] -
+Key F3              A $[Mod2] -
+Key F4              A $[Mod2] -
+Key F5              A $[Mod2] -
+Key F6              A $[Mod2] -
+Key F7              A $[Mod2] -
+Key F8              A $[Mod2] -
+Key F9              A $[Mod2] -
+Key F10             A $[Mod2] -
+Key F11             A $[Mod2] -
+Key F12             A $[Mod2] -
+
+# Arrow Keys
+Key Left            A $[Mod2] -
+Key Right           A $[Mod2] -
+Key Up              A $[Mod2] -
+Key Down            A $[Mod2] -
+
+# Symbols
+Key space           A $[Mod0] -
+Key exclam          A $[Mod0] -
+Key quotedbl        A $[Mod0] -
+Key numbersign      A $[Mod0] -
+Key dollar          A $[Mod0] -
+Key percent         A $[Mod0] -
+Key ampersand       A $[Mod0] -
+Key apostrophe      A $[Mod0] -
+Key quoteright      A $[Mod0] -
+Key parenleft       A $[Mod0] -
+Key parenright      A $[Mod0] -
+Key asterisk        A $[Mod0] -
+Key plus            A $[Mod0] -
+Key comma           A $[Mod0] -
+Key minus           A $[Mod0] -
+Key period          A $[Mod0] -
+Key slash           A $[Mod0] -
+Key colon           A $[Mod0] -
+Key semicolon       A $[Mod0] -
+Key less            A $[Mod0] -
+Key equal           A $[Mod0] -
+Key greater         A $[Mod0] -
+Key question        A $[Mod0] -
+Key at              A $[Mod0] -
+Key bracketleft     A $[Mod0] -
+Key backslash       A $[Mod0] -
+Key bracketright    A $[Mod0] -
+Key asciicircum     A $[Mod0] -
+Key underscore      A $[Mod0] -
+Key grave           A $[Mod0] -
+Key quoteleft       A $[Mod0] -
+Key braceleft       A $[Mod0] -
+Key bar             A $[Mod0] -
+Key braceright      A $[Mod0] -
+Key asciitilde      A $[Mod0] -
+
+# Keypad
+Key KP_Enter        A $[Mod0] -
+Key KP_Home         A $[Mod0] -
+Key KP_Left         A $[Mod0] -
+Key KP_Up           A $[Mod0] -
+Key KP_Right        A $[Mod0] -
+Key KP_Down         A $[Mod0] -
+Key KP_Prior        A $[Mod0] -
+Key KP_Page_Up      A $[Mod0] -
+Key KP_Next         A $[Mod0] -
+Key KP_Page_Down    A $[Mod0] -
+Key KP_End          A $[Mod0] -
+Key KP_Begin        A $[Mod0] -
+Key KP_Insert       A $[Mod0] -
+Key KP_Delete       A $[Mod0] -
+Key KP_Multiply     A $[Mod0] -
+Key KP_Add          A $[Mod0] -
+Key KP_Subtract     A $[Mod0] -
+Key KP_Decimal      A $[Mod0] -
+Key KP_Divide       A $[Mod0] -
+
+# vim:set ft=fvwm:
