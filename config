@@ -30,4 +30,14 @@ SetEnv Mod2 M
 SetEnv Mod3 C
 SetEnv Mod4 SC
 
+# ==============================================================================
+# Directory Paths
+# ==============================================================================
+
+# Preference File Location
+SetEnv FVWM_USER_PREFERENCES   $[FVWM_USERDIR]/preferences
+SetEnv FVWM_SYSTEM_PREFERENCES $[FVWM_SYSTEMDIR]/preferences
+SetEnv FVWM_CONFIG_PREFERENCES $[FVWM_CONFIGDIR]/preferences
+
+
 # vim:set ft=fvwm:

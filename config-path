@@ -3,16 +3,11 @@ ImagePath +:$[FVWM_USERDIR]/icons/$[IconTheme]
 ImagePath +:$[FVWM_SYSTEMDIR]/icons
 ImagePath +:$[FVWM_SYSTEMDIR]/icons/$[IconTheme]
 
-ImagePath /usr/local/share/icons:+
-ImagePath /usr/share/icons/:+
-ImagePath /usr/share/pixmaps:+
-ImagePath /usr/X11R6/include/bitmaps:+
-ImagePath /usr/X11R6/include/X11/pixmaps:+
-ImagePath /usr/X11R6/include/X11/3dpixmaps/normal:+
-ImagePath /usr/include/X11/pixmaps:+
-ImagePath /usr/local/firefox/icons:+
-ImagePath /usr/lib/swiftfox/icons:+
-ImagePath /usr/share/icons/gnome/24x24/stock/media/:+
-ImagePath /usr/share/icons/crystalsvg/22x22/actions:+
+ImagePath +:/usr/share/pixmaps
+ImagePath +:/usr/X11R6/include/X11/pixmaps
+
+# Lots of icon subdirectories under /usr/share/icons....
+ImagePath +:/usr/share/icons/
+ImagePath +:/usr/share/icons/wm-icons
 
 # vim:set ft=fvwm:
