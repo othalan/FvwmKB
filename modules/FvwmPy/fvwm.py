@@ -40,10 +40,20 @@ def GetUnsigned32(value):
 def GetUnsigned16(value):
     return socket.ntohs(value)
 
-Signed32   = ("UnsignedToSigned32", None)
-Signed16   = ("UnsignedToSigned16", None)
-Unsigned32 = ("GetUnsigned32",      None)
-Unsigned16 = ("GetUnsigned16",      None)
+def NullTermLongToString(value):
+    chrs = []
+    value >>= 8
+    while value != 0:
+        chrval = value % 256
+        chrs.insert(0, chr(chrval))
+        value >>= 8
+    return ''.join(chrs)
+
+Signed32   = "(UnsignedToSigned32,   None)"
+Signed16   = "(UnsignedToSigned16,   None)"
+Unsigned32 = "(GetUnsigned32,        None)"
+Unsigned16 = "(GetUnsigned16,        None)"
+StringVar  = "(NullTermLongToString, None)"
 
 PacketTypes = {
    "M_NEW_PAGE": {
@@ -146,7 +156,7 @@ PacketTypes = {
            "windowId"    : BitFieldMap(128, 32, Signed32),
            "frameId"     : BitFieldMap(160, 32, Signed32),
            "fvwmDbEntry" : BitFieldMap(192, 32, Unsigned32), # Not Useful to us
-           # Variable Length Character String
+           "name"        : BitFieldMap(224, None, StringVar) # Variable Length Character String
            }
        },
    "M_ICON_NAME": {
@@ -155,7 +165,7 @@ PacketTypes = {
            "windowId"    : BitFieldMap(128, 32, Signed32),
            "frameId"     : BitFieldMap(160, 32, Signed32),
            "fvwmDbEntry" : BitFieldMap(192, 32, Unsigned32), # Not Useful to us
-           # Variable Length Character String
+           "name"        : BitFieldMap(224, None, StringVar) # Variable Length Character String
            }
        },
    "M_RES_CLASS": {
@@ -164,7 +174,7 @@ PacketTypes = {
            "windowId"    : BitFieldMap(128, 32, Signed32),
            "frameId"     : BitFieldMap(160, 32, Signed32),
            "fvwmDbEntry" : BitFieldMap(192, 32, Unsigned32), # Not Useful to us
-           # Variable Length Character String
+           "name"        : BitFieldMap(224, None, StringVar) # Variable Length Character String
            }
        },
    "M_RES_NAME": {
@@ -173,7 +183,7 @@ PacketTypes = {
            "windowId"    : BitFieldMap(128, 32, Signed32),
            "frameId"     : BitFieldMap(160, 32, Signed32),
            "fvwmDbEntry" : BitFieldMap(192, 32, Unsigned32), # Not Useful to us
-           # Variable Length Character String
+           "name"        : BitFieldMap(224, None, StringVar) # Variable Length Character String
            }
        },
    "M_END_WINDOWLIST": {
@@ -205,12 +215,19 @@ PacketTypes = {
    "M_ERROR": {
        'pktType': 1 << 17,
        'pktVars': {
+           "DUMMY_0"     : BitFieldMap(128, 32, Signed32),
+           "DUMMY_1"     : BitFieldMap(160, 32, Signed32),
+           "DUMMY_2"     : BitFieldMap(192, 32, Signed32),
+           "error"       : BitFieldMap(224, None, StringVar) # Variable Length Character String
            }
        },
    "M_CONFIG_INFO": {
        'pktType': 1 << 18,
        'pktVars': {
-           # Variable length string starting at offset 224
+           "DUMMY_0"     : BitFieldMap(128, 32, Signed32),
+           "DUMMY_1"     : BitFieldMap(160, 32, Signed32),
+           "DUMMY_2"     : BitFieldMap(192, 32, Signed32),
+           "text"        : BitFieldMap(224, None, StringVar) # Variable Length Character String
            }
        },
    "M_END_CONFIG_INFO": {
@@ -225,13 +242,13 @@ PacketTypes = {
            "windowId"    : BitFieldMap(128, 32, Signed32),
            "frameId"     : BitFieldMap(160, 32, Signed32),
            "fvwmDbEntry" : BitFieldMap(192, 32, Unsigned32), # Not Useful to us
-           # Variable Length Character String
+           "name"        : BitFieldMap(224, None, StringVar) # Variable Length Character String
            }
        },
    "M_DEFAULTICON": {
        'pktType': 1 << 21,
        'pktVars': {
-           # Variable Length Character String
+           "name"        : BitFieldMap(128, None, StringVar) # Variable Length Character String
            }
        },
    "M_STRING": {
@@ -240,12 +257,14 @@ PacketTypes = {
            "windowId"    : BitFieldMap(128, 32, Signed32),
            "frameId"     : BitFieldMap(160, 32, Signed32),
            "fvwmDbEntry" : BitFieldMap(192, 32, Unsigned32), # Not Useful to us
-           # Variable Length Character String
+           "text"        : BitFieldMap(224, None, StringVar) # Variable Length Character String
            }
        },
    "M_MINI_ICON": {
        'pktType': 1 << 23,
        'pktVars': {
+           # XXX This should be defined using the fvwm2 source code file
+           #     libs/vpacket.h via a swig module!
            "windowId"    : BitFieldMap(128, 32, Signed32),
            "frameId"     : BitFieldMap(160, 32, Signed32),
            "fvwmDbEntry" : BitFieldMap(192, 32, Unsigned32), # Not Useful to us
@@ -275,7 +294,7 @@ PacketTypes = {
            "windowId"    : BitFieldMap(128, 32, Signed32),
            "frameId"     : BitFieldMap(160, 32, Signed32),
            "fvwmDbEntry" : BitFieldMap(192, 32, Unsigned32), # Not Useful to us
-           # Variable Length Character String
+           "name"        : BitFieldMap(224, None, StringVar) # Variable Length Character String
            }
        },
     "M_SENDCONFIG": {
@@ -301,6 +320,39 @@ PacketTypes = {
    "M_CONFIGURE_WINDOW": {
        'pktType': 1 << 30,
        'pktVars': {
+           # XXX This should be defined using the fvwm2 source code file
+           #     libs/vpacket.h via a swig module!
+           "windowId"           : BitFieldMap(128,  32, Signed32),
+           "frameId"            : BitFieldMap(160,  32, Signed32),
+           "fvwmDbEntry"        : BitFieldMap(192,  32, Unsigned32), # Not Useful to us
+           "frameX"             : BitFieldMap(224,  32, Signed32),
+           "frameY"             : BitFieldMap(256,  32, Signed32),
+           "frameWidth"         : BitFieldMap(288,  32, Unsigned32),
+           "frameHeight"        : BitFieldMap(320,  32, Unsigned32),
+           "desk"               : BitFieldMap(352,  32, Unsigned32),
+           "layer"              : BitFieldMap(384,  32, Unsigned32),
+           "hintsBaseWidth"     : BitFieldMap(416,  32, Unsigned32),
+           "hintsBaseHeight"    : BitFieldMap(448,  32, Unsigned32),
+           "hintsWidthInc"      : BitFieldMap(480,  32, Unsigned32),
+           "hintsHeightInc"     : BitFieldMap(512,  32, Unsigned32),
+           "hintsOrigWidthInc"  : BitFieldMap(544,  32, Unsigned32),
+           "hintsOrigHeightInc" : BitFieldMap(576,  32, Unsigned32),
+           "hintsMinWidth"      : BitFieldMap(608,  32, Unsigned32),
+           "hintsMinHeight"     : BitFieldMap(640,  32, Unsigned32),
+           "hintsMaxWidth"      : BitFieldMap(672,  32, Unsigned32),
+           "hintsMaxHeight"     : BitFieldMap(704,  32, Unsigned32),
+           "iconWindow"         : BitFieldMap(736,  32, Unsigned32),
+           "iconPixmapWindow"   : BitFieldMap(768,  32, Unsigned32),
+           "hintsWindowGravity" : BitFieldMap(800,  32, Unsigned32),
+           "textPixel"          : BitFieldMap(832,  32, Unsigned32),
+           "backPixel"          : BitFieldMap(864,  32, Unsigned32),
+           "ewmhHintLayer"      : BitFieldMap(896,  32, Unsigned32),
+           "ewmhHintDesktop"    : BitFieldMap(928,  32, Unsigned32),
+           "ewmhWindowType"     : BitFieldMap(960,  32, Unsigned32),
+           "titleHeight"        : BitFieldMap(992,  16, Unsigned16),
+           "borderWidth"        : BitFieldMap(1024, 16, Unsigned16),
+           "DUMMY_0"            : BitFieldMap(1088, 16, Unsigned16),
+           "DUMMY_1"            : BitFieldMap(1120, 16, Unsigned16),
            }
        },
     "M_EXTENDED_MSG": {
@@ -311,10 +363,10 @@ PacketTypes = {
    "MX_VISIBLE_ICON_NAME": {
        'pktType': 1 <<  0 | 1 << 31,
        'pktVars': {
-           "windowId"    : BitFieldMap(128, 32, Signed32),
-           "frameId"     : BitFieldMap(160, 32, Signed32),
-           "fvwmDbEntry" : BitFieldMap(192, 32, Unsigned32), # Not Useful to us
-           # Variable Length Character String
+           "windowId"    : BitFieldMap(128, 32,   Signed32),
+           "frameId"     : BitFieldMap(160, 32,   Signed32),
+           "fvwmDbEntry" : BitFieldMap(192, 32,   Unsigned32), # Not Useful to us
+           "name"        : BitFieldMap(224, None, StringVar) # Variable Length Character String
            }
        },
    "MX_ENTER_WINDOW": {
@@ -336,7 +388,10 @@ PacketTypes = {
     "MX_PROPERTY_CHANGE": {
         'pktType': 1 <<  3 | 1 << 31,
         'pktVars': {
-            # Not Yet Supported
+            "type"        : BitFieldMap(128, 32, Signed32),
+            "val1"        : BitFieldMap(160, 32, Signed32),
+            "val2"        : BitFieldMap(192, 32, Signed32),
+            "text"        : BitFieldMap(224, None, StringVar) # Variable Length Character String
             }
         },
     "MX_REPLY": {
@@ -345,7 +400,7 @@ PacketTypes = {
             "windowId"    : BitFieldMap(128, 32, Signed32),
             "frameId"     : BitFieldMap(160, 32, Signed32),
             "fvwmDbEntry" : BitFieldMap(192, 32, Unsigned32), # Not Useful to us
-            # Variable length string
+            "text"        : BitFieldMap(224, None, StringVar) # Variable Length Character String
             }
         },
 }
@@ -370,7 +425,7 @@ class FvwmPacket(object):
     headerBytes   =  16
     pktClasses    =  {}
 
-    varForm       = """    %(name)-13s= BitFieldMap(%(offset)i, %(length)i, %(conversion)s)\n"""
+    varForm       = """    %(name)-13s= BitFieldMap(%(offset)i, %(length)s, %(conversion)s)\n"""
 
     classForm     = """
 global FvwmPacket_%(name)s
@@ -378,8 +433,10 @@ class FvwmPacket_%(name)s(FvwmPacket):
     __metaclass__ = BitFieldStorageLong
     __name        = "%(name)s"
     __type        = %(type)i
-    packetName    = property(lambda self: self.__name, None, "Packet Name")
-    expectedType  = property(lambda self: self.__type, None, "Packet Expected Type Code")
+    __fieldNames  = %(fields)s
+    packetName    = property(lambda self: self.__name,       None, "Packet Name")
+    expectedType  = property(lambda self: self.__type,       None, "Packet Expected Type Code")
+    fields        = property(lambda self: self.__fieldNames, None, "Packet Data Field Names")
 %(body)s
 cls.pktClasses["%(name)s"] = FvwmPacket_%(name)s
 cls.pktClasses[%(type)i]   = FvwmPacket_%(name)s
@@ -407,6 +464,7 @@ cls.pktClasses[%(type)i]   = FvwmPacket_%(name)s
             "name"  : name,
             'type'  : pktType,
             "body"  : "",
+            "fields": [],
             }
         for name, value in pktVars.iteritems():
             data['body'] += cls.varForm % {
@@ -415,6 +473,7 @@ cls.pktClasses[%(type)i]   = FvwmPacket_%(name)s
                 'length'    : value.bits,
                 'conversion': value.convert,
                 }
+            data['fields'].append(name)
         newClass = cls.classForm % data
         exec newClass
 
@@ -449,16 +508,21 @@ class FvwmModule(object):
         if launchContext  == None: self.Usage(True)
 
         try:
-            self.__fdSend = os.fdopen(int(fdSend), 'wb', 0)
-            self.__fdRecv = os.fdopen(int(fdRecv), 'rb', 0)
-        except ValueError, ex:
+            try:
+                self.__fdSend = os.fdopen(int(fdSend), 'wb', 0)
+            except ValueError, ex:
+                self.__fdSend = open(fdSend, 'wb', 0)
+            try:
+                self.__fdRecv = os.fdopen(int(fdRecv), 'rb', 0)
+            except ValueError, ex:
+                self.__fdRecv = open(fdRecv, 'rb', 0)
+        except IOError, ex:
             self.Usage(True)
 
         self.__configFile     = configFile
         self.__conextWindowId = conextWindowId
         self.__launchContext  = launchContext
         self.__exit           = False
-        self.__cbRegistry     = []
 
         self.ParseOptionalArgs(*args)
 
@@ -469,20 +533,23 @@ class FvwmModule(object):
         pass
 
     def __PacketMonitor(self):
-        packet = FvwmPacket()
-        while !self.__exit:
+        while not self.__exit:
+            packet = FvwmPacket()
             packetHeader  = self.fdRecv.read(packet.headerBytes)
             packet.value  = packetHeader
-#            print "%(syncpat)08X %(packetType)08X %(_raw_length)08X %(time)08X:" % packet,
-#            print packet.GetClass(packet.packetType)
             packetData    = self.fdRecv.read(packet.length - packet.headerBytes)
-            packet.value  = packetHeader + packetData
+            packetClass   = packet.GetClass(packet.packetType)
+            pkt           = packetClass()
+            pkt.value     = packetHeader + packetData
             for (packetName, cbFunc) in self.__cbRegistry:
-                if packetName == packet.packetName:
-                    cbFunc(packet)
+                if packetName == pkt.packetName or packetName == '*':
+                    cbFunc(pkt)
 
     def RegisterCallback(self, packetName, cbFunc):
-        self.__cbRegistry.append((packetName, cbFunc))
+        try:
+            self.__cbRegistry.append((packetName, cbFunc))
+        except AttributeError:
+            self.__cbRegistry = [(packetName, cbFunc)]
 
     def ExitApp(self):
         self.__exit = True
