@@ -1,0 +1,215 @@
+#!/usr/bin/env python2.5
+
+import sys
+
+from fvwm  import FvwmModule
+from fvwm  import FvwmPacket
+from XInfo import XInfo
+
+class PropertyDefault(property):
+    """
+    The python builtin class 'property' creator modified to allow setting a
+    default value for the property if the actual value has not yet been
+    set.
+    """
+    def __init__(self, fget=None, fset=None, fdel=None, doc=None, default=None):
+        super(PropertyDefault, self).__init__(fget, fset, fdel, doc)
+        self._default = default
+    def __get__(self, *arg, **kw):
+        try:
+            value = super(PropertyDefault, self).__get__(*arg, **kw)
+        except AttributeError:
+            value = self._default
+        return value
+
+class Window(object):
+    def __init__(self, parent, packet):
+        super(Window, self).__init__()
+        self._column = parent
+        self.id       = packet.windowId,
+        self.packet   = packet
+    id = property(
+        lambda self   : self._id,
+        lambda self, x: setattr(self, '_id', x),
+        doc = "Window ID Value")
+    packet = property(
+        lambda self   : self._packet,
+        lambda self, x: setattr(self, '_packet', x),
+        doc = "Window Configuration Packet")
+    column = property(
+        lambda self: self._column,
+        doc = 'Column object this window resides in')
+
+class Column(list):
+    def __init__(self, parent, *arg):
+        super(Column, self).__init__(*arg)
+        self._area = parent
+
+    width = PropertyDefault(
+        lambda self   : self._width,
+        lambda self, x: setattr(self, '_width', x),
+        default = XInfo().Width(),
+        doc = 'Desk Area Width')
+    height = PropertyDefault(
+        lambda self   : self._height,
+        lambda self, x: setattr(self, '_height', x),
+        default = XInfo().Height(),
+        doc = 'Desk Area Height')
+    area = property(
+        lambda self: self._area,
+        doc = 'DeskArea object this column resides in')
+    active = property(
+        lambda self   : self._active,
+        lambda self, x: setattr(self, '_active', x),
+        doc = 'Active Window')
+
+class DeskArea(list):
+    def __init__(self, parent, *arg):
+        super(DeskArea, self).__init__(*arg)
+        self._manager = parent
+        self.append(Column(self))
+        self.active = self[0]
+
+    width = PropertyDefault(
+        lambda self   : self._width,
+        lambda self, x: setattr(self, '_width', x),
+        default = XInfo().Width(),
+        doc = 'Desk Area Width')
+    height = PropertyDefault(
+        lambda self   : self._height,
+        lambda self, x: setattr(self, '_height', x),
+        default = XInfo().Height(),
+        doc = 'Desk Area Height')
+    manager = property(
+        lambda self: self._manager,
+        doc = 'DeskAreaManager object this area resides in')
+    active = property(
+        lambda self   : self._active,
+        lambda self, x: setattr(self, '_active', x),
+        doc = 'Active Column')
+
+class DeskAreaManager(list):
+    def __init__(self, parent, *arg):
+        super(DeskAreaManager, self).__init__(*arg)
+        self._desk = parent
+        self.append(DeskArea(self))
+        self.active = self[0]
+
+    def new(self, append=True):
+        if append:
+            self.append(DeskArea())
+        else:
+            self.insert(0, DeskArea())
+
+    desk = property(
+        lambda self: self._desk,
+        doc = 'Desk object this area manager resides in')
+    width = PropertyDefault(
+        lambda self   : self._width,
+        lambda self, x: setattr(self, '_width', x),
+        default = XInfo().Width(),
+        doc = 'Desk Area Width')
+    height = PropertyDefault(
+        lambda self   : self._height,
+        lambda self, x: setattr(self, '_height', x),
+        default = XInfo().Height(),
+        doc = 'Desk Area Height')
+    active = property(
+        lambda self   : self._active,
+        lambda self, x: setattr(self, '_active', x),
+        doc = 'Active DeskArea')
+
+class Desk(object):
+    __x = XInfo()
+
+    def __init__(self, num):
+        self.desk   = num
+        self._rows = DeskAreaManager(self)
+        self.active = self.rows[0]
+
+    num = property(
+        lambda self   : self._desk,
+        lambda self, x: setattr(self, '_desk', x),
+        doc = 'Desk Number')
+    name = PropertyDefault(
+        lambda self   : self._name,
+        lambda self, x: setattr(self, '_name', x),
+        default = '',
+        doc = 'Desk Name')
+    width = PropertyDefault(
+        lambda self   : self._x.Width(),
+        doc = 'X Screen Width')
+    height = PropertyDefault(
+        lambda self   : self._x.Height(),
+        doc = 'X Screen Height')
+    screen = PropertyDefault(
+        lambda self   : XInfo().Screen(),
+        doc = 'X Screen Number')
+    rows = PropertyDefault(
+        lambda self: self._rows,
+        doc = 'Desktop Areas (rows)')
+    active = property(
+        lambda self   : self._active,
+        lambda self, x: setattr(self, '_active', x),
+        doc = 'Active DeskAreaManager')
+
+class FvwmiPlacementManager(FvwmModule):
+    def __init__(self, *args):
+        self.RegisterCallback('M_ADD_WINDOW', self.OnNewWindow)
+
+        self.__desks = {}
+
+        self.__InWindowList = False
+        self.__InConfigList = False
+        self.__layout       = 'stacked'
+        self.__x            = XInfo()
+
+        super(FvwmiPlacementManager, self).__init__(*args)
+
+    def ParseOptionalArgs(self, *args):
+        pass
+
+    def PlaceStackedWindow(self, packet):
+        # XXX Evaluate what can be moved into various classes!
+        self.__desks.setdefault(packet.desk, Desk(packet.desk))
+        col = self.__desks[packet.desk].active.active
+        win = Window(col, packet)
+        col.append(win)
+        col.active = win
+        print col
+        return
+
+
+        self.__desks.setdefault(packet.desk, {'columns': []})
+        if not packet.windowId in self.desks[packet.desk]:
+            
+            self.Send(packet.windowId, "Move 0 0")
+            self.Send(packet.windowId, "Resize %ip %ip" % (
+                self.__x.Width()  - packet.borderWidth,
+                self.__x.Height() - packet.borderWidth))
+            self.desks[packet.desk]['windows']
+        else:
+            print "Window Already Managed!"
+
+    def PlaceMaximizedWindow(self, packet):
+        pass
+
+    def PlaceTiledWindow(self, packet):
+        pass
+
+    def OnNewWindow(self, packet):
+        self._layoutTypes[self.__layout](self, packet)
+
+    _layoutTypes = {
+        'stacked'  : PlaceStackedWindow,
+        #'maximized': PlaceMaximizedWindow,
+        #'tiled'    : PlaceTiledWindow,
+        }
+
+if __name__ == "__main__":
+    try:
+        module = FvwmiPlacementManager(*sys.argv)
+    except KeyboardInterrupt, ex:
+        pass
+
+# vim:set ts=4 sw=4 et nu:
