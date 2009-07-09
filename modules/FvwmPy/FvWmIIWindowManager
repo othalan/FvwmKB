@@ -1,0 +1,59 @@
+#!/usr/bin/env python2.5
+
+import sys
+
+from fvwm  import FvwmModule
+from fvwm  import FvwmPacket
+from XInfo import XInfo
+
+class FvWmIIWindowManager(FvwmModule):
+    def __init__(self, *args):
+        self.__windows = {}
+        self.__x       = XInfo()
+        self.RegisterCallback('M_CONFIGURE_WINDOW', self.WindowTracker)
+        #self.RegisterCallback('M_ADD_WINDOW',       self.OnNewWindow)
+        self.RegisterCallback('M_END_WINDOWLIST',   self.OnEndWindowList)
+        self.RegisterCallback('M_STRING',           self.CommandParser)
+        self.RegisterCallback('*',                  self.PrintAllPackets)
+        self.__InWindowList = False
+        super(FvWmIIWindowManager, self).__init__(*args)
+
+    def ParseOptionalArgs(self, *args):
+        pass
+        self.Send(0, "Send_WindowList")
+
+    def RequestWindowList(self):
+        self.__InWindowList = True
+        self.Send(0, "Send_WindowList")
+
+    def WindowTracker(self, packet):
+        self.__windows[packet.windowId] = packet
+
+    def OnEndWindowList(self, packet):
+        self.__InWindowList = False
+
+    def OnNewWindow(self, packet):
+        if not self.__InWindowList:
+            print 'resizing'
+            return
+            self.Send(packet.windowId, "Move 0 0")
+            self.Send(packet.windowId, "Resize %ip %ip" % (
+                self.__x.Width(),
+                self.__x.Height()))
+        else:
+            print 'not resizing'
+
+    def CommandParser(self, packet):
+        print "command: %s" % packet.text
+
+    def PrintAllPackets(self, packet):
+        print >>sys.stdout, type(packet)
+        sys.stdout.flush()
+
+if __name__ == "__main__":
+    try:
+        module = FvWmIIWindowManager(*sys.argv)
+    except KeyboardInterrupt, ex:
+        pass
+
+# vim:set ts=4 sw=4 et nu:

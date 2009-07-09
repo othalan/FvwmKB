@@ -1,6 +1,7 @@
 #!/usr/bin/env python2.5
 
 import sys
+import fvwm
 
 from fvwm  import FvwmModule
 from fvwm  import FvwmPacket
@@ -22,12 +23,85 @@ class PropertyDefault(property):
             value = self._default
         return value
 
+class AlreadyRunning(Exception): pass
+
+class LayoutManager(object):
+    __status = {'working': False}
+
+    def __init__(self, fvwmObj, column):
+        self.fvwm    = fvwmObj
+        self.column  = column
+        self.current = -1
+
+        # XXX NOTE:  Not thread safe!
+        if not self.__status['working']:
+            self.__status['working'] = True
+        else:
+            raise AlreadyRunning
+        self.fvwm.registerCallback('M_CONFIGURE_WINDOW', self.onLayoutConfig)
+
+    def __del__(self):
+        self.__status['working'] = False
+
+    def layout(self):
+        self.total     = len(self.column)
+        self.current   = 0
+        self.available = self.column.height
+        self.top       = self.column.top
+        self.next()
+
+    def next(self):
+        if self.total != len(self.column):
+            self.layout()
+        elif self.current >= len(self.column):
+            self.fvwm.unregisterCallback('M_CONFIGURE_WINDOW', self.onLayoutConfig)
+        else:
+            maxHeight = self.available / (len(self.column) - self.current)
+            self.fvwm.sendTo(self.column[self.current].id, 'ResizeMove frame %ip %ip %ip %ip' % (
+                self.column.width, maxHeight,
+                self.column.left, self.top))
+
+    def onLayoutConfig(self, packet):
+        if self.current == -1:
+            pass
+        elif self.total != len(self.column):
+            self.layout()
+        elif packet.windowId == self.column[self.current].id:
+            self.available -= self.column[self.current].packet.frame_height
+            self.top       += self.column[self.current].packet.frame_height
+            self.current   += 1
+            self.next()
+
+
+class TiledLayoutManager(LayoutManager):
+    def __init__(self, fvwmObj, windows):
+        super(self, TiledLayoutManager).__init__(fvwmObj, windows)
+
+
 class Window(object):
-    def __init__(self, parent, packet):
+    def __init__(self, parent, addPacket, fvwmInterface):
         super(Window, self).__init__()
-        self._column = parent
-        self.id       = packet.windowId,
-        self.packet   = packet
+        self._parent   = parent
+        self.id        = addPacket.windowId
+        self.packet    = addPacket
+        self._fvwm     = fvwmInterface
+        self.fvwm.registerCallback('M_CONFIGURE_WINDOW', self.onLayoutConfig)
+        # XXX Should M_FOCUS_CHANGE be used?
+        # XXX \-> If so, must unfocus previous by searching active windows....
+        self.fvwm.registerCallback('MX_ENTER_WINDOW', self.onEnterWindow)
+        self.fvwm.registerCallback('MX_LEAVE_WINDOW', self.onLeaveWindow)
+        self.parent.append(self)
+
+    def __str__(self):
+        return "0x%X" % self.id
+
+    def onLayoutConfig(self, packet):
+        if packet.windowId == self.id:
+            self.packet = packet
+
+    def onEnterWindow (self, packet): self._focus = True
+    def onLeaveWindow (self, packet): self._focus = False
+
     id = property(
         lambda self   : self._id,
         lambda self, x: setattr(self, '_id', x),
@@ -35,161 +109,161 @@ class Window(object):
     packet = property(
         lambda self   : self._packet,
         lambda self, x: setattr(self, '_packet', x),
-        doc = "Window Configuration Packet")
-    column = property(
-        lambda self: self._column,
+        doc = "Window Add/Configure Packet")
+    fvwm = property(
+        lambda self   : self._fvwm,
+        doc = "FVWM Interface Object for sending commands")
+    parent = property(
+        lambda self: self._parent,
         doc = 'Column object this window resides in')
+    hasFocus = property(
+        lambda self: self._focus,
+        # TODO: Allow this to be set in order to set focus on a window?
+        doc = 'This window has "focus" (is active)')
 
 class Column(list):
-    def __init__(self, parent, *arg):
+    def __init__(self, parent, fvwmInterface, *arg):
         super(Column, self).__init__(*arg)
-        self._area = parent
+        self._parent = parent
+        self._fvwm   = fvwmInterface
+        self._width  = XInfo().Width()
+        self._height = XInfo().Height()
+        self._top    = 0
+        self._left   = 0
+        self._active = False
 
-    width = PropertyDefault(
+    def __str__(self):
+        items = map(lambda x: str(x), self)
+        return "[%s]" % ', '.join(items)
+
+    def append(self, window):
+        list.append(self, window)
+        self.layoutTiled()
+
+    def remove(self, obj):
+        if isinstance(obj, int) or isinstance(obj, long):
+            for win in self:
+                if win.id == obj:
+                    list.remove(self, win)
+                    break
+        elif isinstance(obj, FvwmPacket):
+            for win in self:
+                if win.id == obj.windowId:
+                    list.remove(self, win)
+                    break
+        else:
+            list.remove(self, obj)
+        self.layoutTiled()
+
+    def layoutTiled(self):
+        try:
+            mgr = LayoutManager(self.fvwm, self)
+            mgr.layout()
+        except AlreadyRunning:
+            pass
+        return
+
+    # Find the active window object, if any
+    def findActiveWin(self):
+        for win in self:
+            if win.hasFocus:
+                return win
+        return None
+
+    parent = property(
+        lambda self: self._parent,
+        doc = 'Parent object this column resides in')
+    fvwm = property(
+        lambda self   : self._fvwm,
+        doc = "FVWM Interface Object for sending commands")
+    width = property(
         lambda self   : self._width,
         lambda self, x: setattr(self, '_width', x),
-        default = XInfo().Width(),
-        doc = 'Desk Area Width')
-    height = PropertyDefault(
+        doc = 'Column Width')
+    height = property(
         lambda self   : self._height,
         lambda self, x: setattr(self, '_height', x),
-        default = XInfo().Height(),
-        doc = 'Desk Area Height')
-    area = property(
-        lambda self: self._area,
-        doc = 'DeskArea object this column resides in')
+        doc = 'Column Height')
+    top = property(
+        lambda self   : self._top,
+        lambda self, x: setattr(self, '_top', x),
+        doc = 'Column Top edge coordinate')
+    left = property(
+        lambda self   : self._left,
+        lambda self, x: setattr(self, '_left', x),
+        doc = 'Column Left edge coordinate')
     active = property(
         lambda self   : self._active,
         lambda self, x: setattr(self, '_active', x),
         doc = 'Active Window')
 
-class DeskArea(list):
-    def __init__(self, parent, *arg):
-        super(DeskArea, self).__init__(*arg)
-        self._manager = parent
-        self.append(Column(self))
-        self.active = self[0]
-
-    width = PropertyDefault(
-        lambda self   : self._width,
-        lambda self, x: setattr(self, '_width', x),
-        default = XInfo().Width(),
-        doc = 'Desk Area Width')
-    height = PropertyDefault(
-        lambda self   : self._height,
-        lambda self, x: setattr(self, '_height', x),
-        default = XInfo().Height(),
-        doc = 'Desk Area Height')
-    manager = property(
-        lambda self: self._manager,
-        doc = 'DeskAreaManager object this area resides in')
-    active = property(
-        lambda self   : self._active,
-        lambda self, x: setattr(self, '_active', x),
-        doc = 'Active Column')
-
-class DeskAreaManager(list):
-    def __init__(self, parent, *arg):
-        super(DeskAreaManager, self).__init__(*arg)
-        self._desk = parent
-        self.append(DeskArea(self))
-        self.active = self[0]
-
-    def new(self, append=True):
-        if append:
-            self.append(DeskArea())
-        else:
-            self.insert(0, DeskArea())
-
-    desk = property(
-        lambda self: self._desk,
-        doc = 'Desk object this area manager resides in')
-    width = PropertyDefault(
-        lambda self   : self._width,
-        lambda self, x: setattr(self, '_width', x),
-        default = XInfo().Width(),
-        doc = 'Desk Area Width')
-    height = PropertyDefault(
-        lambda self   : self._height,
-        lambda self, x: setattr(self, '_height', x),
-        default = XInfo().Height(),
-        doc = 'Desk Area Height')
-    active = property(
-        lambda self   : self._active,
-        lambda self, x: setattr(self, '_active', x),
-        doc = 'Active DeskArea')
-
-class Desk(object):
-    __x = XInfo()
-
-    def __init__(self, num):
-        self.desk   = num
-        self._rows = DeskAreaManager(self)
-        self.active = self.rows[0]
-
-    num = property(
-        lambda self   : self._desk,
-        lambda self, x: setattr(self, '_desk', x),
-        doc = 'Desk Number')
-    name = PropertyDefault(
-        lambda self   : self._name,
-        lambda self, x: setattr(self, '_name', x),
-        default = '',
-        doc = 'Desk Name')
-    width = PropertyDefault(
-        lambda self   : self._x.Width(),
-        doc = 'X Screen Width')
-    height = PropertyDefault(
-        lambda self   : self._x.Height(),
-        doc = 'X Screen Height')
-    screen = PropertyDefault(
-        lambda self   : XInfo().Screen(),
-        doc = 'X Screen Number')
-    rows = PropertyDefault(
-        lambda self: self._rows,
-        doc = 'Desktop Areas (rows)')
-    active = property(
-        lambda self   : self._active,
-        lambda self, x: setattr(self, '_active', x),
-        doc = 'Active DeskAreaManager')
-
 class FvwmiPlacementManager(FvwmModule):
+    MODULE = "*FvwmiPlacementManager"
     def __init__(self, *args):
-        self.RegisterCallback('M_ADD_WINDOW', self.OnNewWindow)
+        self.__initialized = False
 
-        self.__desks = {}
+        self.registerCallback('M_ADD_WINDOW', self.OnNewWindow)
+        self.registerCallback('M_DESTROY_WINDOW', self.OnDestroyWindow)
+        self.registerCallback('M_CONFIG_INFO', self.onConfigInfo)
+        self.registerCallback('M_END_CONFIG_INFO', self.onEndConfigInfo)
+
+        self.registerCallback('*', self.printAllPackets)
+        self.registerCommand ('*', self.printAllCommands)
+
+        self.__col = Column(None, self) # XXX Eventually this will be a list of desks
 
         self.__InWindowList = False
         self.__InConfigList = False
-        self.__layout       = 'stacked'
         self.__x            = XInfo()
 
         super(FvwmiPlacementManager, self).__init__(*args)
 
     def ParseOptionalArgs(self, *args):
-        pass
+        self.initGetConfigLine(self.MODULE)
+        self.setMessageMask(0
+                | fvwm.M_ADD_WINDOW
+                | fvwm.M_DESTROY_WINDOW
+                | fvwm.M_FOCUS_CHANGE
+                | fvwm.M_CONFIGURE_WINDOW
+                | fvwm.M_SENDCONFIG
+                | fvwm.M_STRING
+                | fvwm.M_CONFIG_INFO)
+
+        self.setMessageMask(0
+                | fvwm.MX_ENTER_WINDOW
+                | fvwm.MX_LEAVE_WINDOW)
+
+        self.send(0, "Nop")
+
+
+    def onEndConfigInfo(self, packet):
+        """On M_END_CONFIG_INFO at module start, notify that configuration is complete"""
+        if not self.__initialized:
+            self.__initialized = True
+            self.sendFinishedStartupNotification()
+
+    def onConfigInfo(self, packet):
+        if packet.text.startswith(self.MODULE):
+            # TODO: Parse module configuration here....
+            pass
+
+    def printAllPackets(self, packet):
+        try:
+            print "%8.8X %s" % (packet.windowId, packet.packetName),
+        except AttributeError:
+            print " "*8, packet.packetName,
+
+        if 'text' in packet.fields:
+            print packet.text
+        else:
+            print ""
+
+    def printAllCommands(self, *cmd):
+        print "COMMAND: %s" % (' '.join(cmd))
+
 
     def PlaceStackedWindow(self, packet):
-        # XXX Evaluate what can be moved into various classes!
-        self.__desks.setdefault(packet.desk, Desk(packet.desk))
-        col = self.__desks[packet.desk].active.active
-        win = Window(col, packet)
-        col.append(win)
-        col.active = win
-        print col
-        return
-
-
-        self.__desks.setdefault(packet.desk, {'columns': []})
-        if not packet.windowId in self.desks[packet.desk]:
-            
-            self.Send(packet.windowId, "Move 0 0")
-            self.Send(packet.windowId, "Resize %ip %ip" % (
-                self.__x.Width()  - packet.borderWidth,
-                self.__x.Height() - packet.borderWidth))
-            self.desks[packet.desk]['windows']
-        else:
-            print "Window Already Managed!"
+        pass
 
     def PlaceMaximizedWindow(self, packet):
         pass
@@ -197,14 +271,11 @@ class FvwmiPlacementManager(FvwmModule):
     def PlaceTiledWindow(self, packet):
         pass
 
-    def OnNewWindow(self, packet):
-        self._layoutTypes[self.__layout](self, packet)
+    def OnDestroyWindow(self, packet):
+        self.__col.remove(packet.windowId)
 
-    _layoutTypes = {
-        'stacked'  : PlaceStackedWindow,
-        #'maximized': PlaceMaximizedWindow,
-        #'tiled'    : PlaceTiledWindow,
-        }
+    def OnNewWindow(self, packet):
+        win = Window(self.__col, packet, self)
 
 if __name__ == "__main__":
     try:

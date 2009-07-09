@@ -12,7 +12,7 @@ LDFLAGS  = $(shell python2.5-config --ldflags)
 .PHONY: all
 all: _FvwmPkt.so
 
-FvwmPkt_wrap.cpp: fvwm_mod.h
+FvwmPkt_wrap.cpp: fvwm_mod.h fvwm_extension.h
 
 _FvwmPkt.so: FvwmPkt_wrap.o
 	g++ -shared $(LDFLAGS) $^ -o $@

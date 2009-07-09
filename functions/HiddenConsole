@@ -1,0 +1,96 @@
+
+# Variables
+SetEnv HiddenConsole-Border "1"
+#SetEnv HiddenConsoleTerminal "NO_HiddenCONSOLE_TERMINAL_FOUND"
+#SetEnv HiddenConsole-Height "50"
+
+CheckPreferences HiddenConsoleTerminal "SavePreferences HiddenConsoleTerminal 'FindCommand HiddenConsoleTerminal mrxvt urxvt aterm xterm'"
+LoadPreferences HiddenConsoleTerminal
+
+CheckPreferences HiddenConsoleCommand "SavePreferences HiddenConsoleCommand 'SetEnv HiddenConsole-Command \"$[HiddenConsoleTerminal] -name HiddenConsoleNeedsUniqueName -geometry +0-0\"'"
+LoadPreferences HiddenConsoleCommand
+
+CheckPreferences HiddenConsoleHeight "SavePreferences HiddenConsoleHeight 'SetEnv HiddenConsole-Height 50'"
+LoadPreferences HiddenConsoleHeight
+
+CheckPreferences HiddenConsoleLocation "SavePreferences HiddenConsoleLocation 'SetEnv HiddenConsole-Location -'"
+LoadPreferences HiddenConsoleLocation
+
+#Include preferences/HiddenConsole-Height
+
+DestroyFunc HiddenConsole
+AddToFunc HiddenConsole
++ I None (HiddenConsoleNeedsUniqueName) HiddenConsole-Init
++ I All (HiddenConsoleNeedsUniqueName, CurrentDesk) HiddenConsole-Hide
++ I TestRc (0) HiddenConsole-Show
+
+DestroyFunc HiddenConsole-Init
+AddToFunc HiddenConsole-Init
++ I All (HiddenConsoleNeedsUniqueName) Maximize ewmhiwa True 100 0
++ I	Style HiddenConsoleNeedsUniqueName !Title, !Handles, SkipMapping, \
+	WindowListSkip, VariableSize, VariablePosition, NoIcon, StaysOnTop, \
+	!Iconifiable, EWMHMaximizeIgnoreWorkingArea, StickyAcrossPages, \
+	Maximizable, BorderWidth $[HiddenConsole-Border], \
+	Colorset $[cs-Hiddenconsole], HilightColorset $[cs-Hiddenconsole], \
+	BorderColorset $[cs-Hiddenconsole], \
+	HilightBorderColorset $[cs-Hiddenconsole], WindowShadeSteps 8, \
+	WindowShadeShrinks
+
+# If you want to change HiddenConsole command, do it here!
++ I Exec exec $[HiddenConsole-Command]
+# If you want to change HiddenConsole command, do it here!
+
++ I Wait HiddenConsoleNeedsUniqueName
++ I All (HiddenConsoleNeedsUniqueName) Maximize 100 $[HiddenConsole-Height]
++ I All (HiddenConsoleNeedsUniqueName) Move 0 $[HiddenConsole-Location]0
++ I All (HiddenConsoleNeedsUniqueName) MoveToDesk 0 666 
++ I Style HiddenConsoleNeedsUniqueName VariablePosition, VariableSize, !Maximizable
++ I Prev (CurrentPage, AcceptsFocus, Visible) Focus
+
+DestroyFunc HiddenConsole-Show
+AddToFunc HiddenConsole-Show
++ I All (HiddenConsoleNeedsUniqueName) MoveToDesk 0 $[desk.n]
++ I All (HiddenConsoleNeedsUniqueName) Raise 
++ I All (HiddenConsoleNeedsUniqueName) Focus 
+ 
+DestroyFunc HiddenConsole-Hide
+AddToFunc HiddenConsole-Hide
++ I All (HiddenConsoleNeedsUniqueName) MoveToDesk 0 666 
++ I Window-FocusRemembered
+
+DestroyFunc HiddenConsole-Resize
+AddToFunc HiddenConsole-Resize
++ H Resize Direction S
++ H SetEnv HiddenConsole-Height "$[w.height]p"
++ H SavePreferences HiddenConsoleHeight "SetEnv HiddenConsole-Height $[w.height]p"
+
+DestroyFunc SetHiddenConsoleHeightInc
+AddToFunc   SetHiddenConsoleHeightInc
++ I Style HiddenConsoleNeedsUniqueName VariableSize
++ I Style HiddenConsoleNeedsUniqueName VariablePosition
++ I Next (HiddenConsoleNeedsUniqueName) Resize keep w+1c
++ I Next (HiddenConsoleNeedsUniqueName) Move 0 $[HiddenConsole-Location]0
+
+DestroyFunc SetHiddenConsoleHeightDec
+AddToFunc   SetHiddenConsoleHeightDec
++ I Style HiddenConsoleNeedsUniqueName VariableSize
++ I Style HiddenConsoleNeedsUniqueName VariablePosition
++ I Next (HiddenConsoleNeedsUniqueName) Resize keep w-1c
++ I Next (HiddenConsoleNeedsUniqueName) Move 0 $[HiddenConsole-Location]0
+
+# Dummy functions to avoid error messages
+AddToFunc Window-FocusRemembered I Nop
+AddToFunc Window-RememberFocused I Nop
+
+DestroyFunc SetHiddenConsoleLocation
+AddToFunc SetHiddenConsoleLocation
++ I Style HiddenConsoleNeedsUniqueName VariableSize
++ I Style HiddenConsoleNeedsUniqueName VariablePosition
++ I SavePreferences HiddenConsoleLocation "SetEnv HiddenConsole-Location $0"
++ I Schedule 100 LoadPreferences HiddenConsoleLocation
+# Note:  Immediate execution does not wait for the previous command to
+# complete before the next is is run.  Schedule the Move and final style
+# change to run later in order to account for this.
++ I All (HiddenConsoleNeedsUniqueName) Move 0 $[0]0
+
+# vim:ft=fvwm
