@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.5
+#!/usr/bin/env python2.7
 
 from fvwm import FvwmModule
 from fvwm import FvwmPacket

@@ -1,0 +1,48 @@
+Requirements
+
+- FVWM module which provides automated window layout and keyboard navigation
+  similar to RatPoison, WMII, etc.
+
+  - Configuration
+    - Configuration shall occur via FVWM configuration files
+    - Configuration should use separate files, instead of a single monolithic
+      file, in order to preserve clarity.
+  - Virtual Desktops
+    - Virtual Desktops shall be supported.
+    - Virtual Desktops shall allow a mode where windows are completely unmanaged
+      (handled instead by default FVWM rules).
+    - Virtual Desktops shall have an option to control automatic deletion of the
+      desktop when empty.
+  - Window Layout
+    - Window Layout shall account for EWMH when placing windows.
+    - Multiple Monitors shall be supported.
+    - A Tiled window layout shall be supported.
+    - A Full Screen window layout shall be supported.
+    - A Stacked window layout shall be supported.  (One window visible, others
+      only the title bar in a vertical stack)
+    - A Floating window layout shall be supported which uses an FVWM window
+      layout manager.  TBD:  Is this the same as the Virtual Desktop requirement
+      for an unmanaged mode?
+    - Multiple columns of windows shall be supported, each with its own layout
+      scheme (i.e. Titled, Stacked, etc.).
+    - Multiple rows of windows shall be supported, each with its own layout
+      scheme (i.e. Titled, Stacked, etc.).
+  - Keyboard Navigation
+    - Keyboard Navigation keys shall be configurable.  NOTE:  This means some
+      Keyboard Navigation features may not be enabled by the current
+      configuration.
+    - Keyboard Navigation shall support switching between desktops.
+    - Keyboard Navigation shall support switching between windows.
+    - Keyboard Navigation shall support resizing windows if relevant to the
+      current Window Layout.
+    - Keyboard Navigation shall support a mode where Keyboard Navigation is
+      disabled.
+  - Mouse Navigation
+    - All mouse button actions shall be configurable.  NOTE:  This means some
+      Mouse Navigation features may not be enabled by the current configuration.
+    - Mouse Navigation shall be fully supported in all Window Layouts.
+    - Mouse Navigation shall allow window switching by means of a button click.
+      NOTE:  This includes the scroll wheel.
+    - Mouse Navigation shall support window resizing.
+
+vim:set tw=80 ts=2 sw=2 cino=>2:

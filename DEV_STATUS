@@ -1,0 +1,18 @@
+2012/03/11:
+  - Project State Unknown - No serious development in years.
+  - Added files for Requirements, Design, and Development Status to help track
+    changes in the future when work comes to a halt.
+  - Consider finding an mechanism for Requirements tracking
+  - Consider setting up an online bug tracker
+  - Steps to resume progress:
+    - FVWM: Setup fvwm running as an alternate window manager
+    - COMM: Python module communicating with fvwm, no packet format parsing
+    - TEST: Setup a test suite to be used for any tests that can be automated
+    - SWIG: investigate state of the fvwm automated interface
+      - Determine which data structures are needed for basic functionality and
+        if they are currently available
+      - Add missing data structures _only_ if they are needed for the current
+        stage of development!
+
+
+vim:tw=80 ts=2 sw=2 cino=>2:

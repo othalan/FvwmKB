@@ -1,13 +1,13 @@
-FVWM_SRC_DIR = ${HOME}/src/fvwm-2.5.26
+FVWM_SRC_DIR = ${HOME}/src/fvwm-2.5.28.ds
 SRCS  = $(wildcard *.swg)
 CSRCS = $(SRCS:%.swg=%_wrap.cpp)
 PYS   = $(SRCS:%.swg=%.py)
 
-CFLAGS   = $(shell python2.5-config --cflags)
+CFLAGS   = $(shell python2.7-config --cflags)
 CFLAGS  += -I${FVWM_SRC_DIR} -I${FVWM_SRC_DIR}/fvwm
 CFLAGS  += $(shell freetype-config --cflags)
 
-LDFLAGS  = $(shell python2.5-config --ldflags)
+LDFLAGS  = $(shell python2.7-config --ldflags)
 
 .PHONY: all
 all: _FvwmPkt.so

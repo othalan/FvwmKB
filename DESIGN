@@ -1,0 +1,24 @@
+Design Notes
+
+QUESTIONS:
+- Can window resizing be prevented when the resize is not reasonable for the
+  current layout?
+- How can columns (and rows) be resized?  Is some sort of "fake window" needed
+  to allow this?
+
+DESIGN STAGES:
+- Communicate with FVWM
+- Create FVWM configuration variables specific to the module
+- Keyboard navigation for unmanaged windows - using FVWM window switching rules
+- Tiled Window Layout
+- Keyboard navigation for managed windows
+- Support window resizing
+- Mouse navigation for managed windows
+- Stacked Window Layout
+- Full Screen Window Layout
+- Multiple Desktops
+- Multiple Columns
+- Multiple Rows
+- Multiple Monitors
+
+vim:set tw=80 ts=2 sw=2 cino=>2:
