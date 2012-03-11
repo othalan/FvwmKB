@@ -1,4 +1,6 @@
 2012/03/11:
+  - Update Makefile for FVWM link, however it does not load in Python
+2012/03/11:
   - Project State Unknown - No serious development in years.
   - Added files for Requirements, Design, and Development Status to help track
     changes in the future when work comes to a halt.

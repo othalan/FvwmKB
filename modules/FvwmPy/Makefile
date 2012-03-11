@@ -1,4 +1,4 @@
-FVWM_SRC_DIR = ${HOME}/src/fvwm-2.5.28.ds
+FVWM_SRC_DIR = ${HOME}/src/fvwm-2.5.30.ds
 SRCS  = $(wildcard *.swg)
 CSRCS = $(SRCS:%.swg=%_wrap.cpp)
 PYS   = $(SRCS:%.swg=%.py)
@@ -17,17 +17,17 @@ FvwmPkt_wrap.cpp: fvwm_mod.h fvwm_extension.h
 _FvwmPkt.so: FvwmPkt_wrap.o
 	g++ -shared $(LDFLAGS) $^ -o $@
 
-fvwm_mod.h: ${FVWM_SRC_DIR}/fvwm/fvwm.h
+fvwm_mod.h: ${FVWM_SRC_DIR}/fvwm/fvwm.h Makefile
 	sed     's/\(\<icon_boxes\>\)\([^;]\)/\1_type\2/' $< \
 	  | sed 's/\(} *\)\(\<icon_boxes\>\)/\1\2_type/' \
-	  | sed 's/^.*SetMWM_INFO.*//' > $@
+	  | sed 's/^.*SetMWM_INFO.*// ' \
+      | sed "s%snap_attraction_t;%&\n#ifdef __cplusplus\n$(shell grep 'SNAP_*' $< | sed 's%\(SNAP_[A-Z_]*\) *= *\(0x[0-9]*\),%#define \1 \2\\n%')#endif%" > $@
 
 %_wrap.cpp: %.swg
 	swig -python -I${FVWM_SRC_DIR} -o $@ $<
 
 %.o: %.cpp
 	g++ -fPIC -c ${CFLAGS} $< -o $@
-
 
 clean:
 	rm -f *.pyc
