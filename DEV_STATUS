@@ -1,4 +1,15 @@
 2012/03/11:
+  - Compiling and loading in Python2.7
+  - Pybit references commented out because that library is broken -- Need
+    something new!
+  - Modify the swig interface to include module constants
+  - Do an initial port to Python3.2
+    - Module code ports cleanly
+    - Requires Xlib library for Python3.2, which is not yet available
+      - Port of Xlib library to Python3.2 was smooth, however it uses the 'new'
+        library which has been removed in 3.x  Needs more work (and feed changes
+        back to the developers!)
+2012/03/11:
   - Update Makefile for FVWM link, however it does not load in Python
 2012/03/11:
   - Project State Unknown - No serious development in years.
