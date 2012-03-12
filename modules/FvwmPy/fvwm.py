@@ -5,7 +5,7 @@ import socket
 import struct
 import sys
 
-import FvwmPkt
+import FvwmCPkt
 
 #from pybit import ByteMap
 #from pybit import ByteMapMeta
@@ -58,7 +58,7 @@ StringVar  = "(NullTermLongToString, None)"
 
 PacketTypes = {
    "M_NEW_PAGE": {
-       'pktType': FvwmPkt.M_NEW_PAGE,
+       'pktType': FvwmCPkt.M_NEW_PAGE,
        'pktVars': {
            #"vpX"   : ByteMap(16, 4, 'int'),
            #"vpY"   : ByteMap(20, 4, 'int'),
@@ -70,18 +70,18 @@ PacketTypes = {
            }
        },
    "M_NEW_DESK": {
-       'pktType': FvwmPkt.M_NEW_DESK,
+       'pktType': FvwmCPkt.M_NEW_DESK,
        'pktVars': {
            #"desk"  : ByteMap(16, 4, 'int'),
            }
        },
    "M_OLD_ADD_WINDOW": {
-       'pktType': FvwmPkt.M_OLD_ADD_WINDOW,
+       'pktType': FvwmCPkt.M_OLD_ADD_WINDOW,
        'pktVars': {
            }
        },
    "M_RAISE_WINDOW": {
-       'pktType': FvwmPkt.M_RAISE_WINDOW,
+       'pktType': FvwmCPkt.M_RAISE_WINDOW,
        'pktVars': {
            #"windowId"    : ByteMap(16, 4, 'ulong'),
            #"frameId"     : ByteMap(20, 4, 'int'),
@@ -89,7 +89,7 @@ PacketTypes = {
            }
        },
    "M_LOWER_WINDOW": {
-       'pktType': FvwmPkt.M_LOWER_WINDOW,
+       'pktType': FvwmCPkt.M_LOWER_WINDOW,
        'pktVars': {
            #"windowId"    : ByteMap(16, 4, 'ulong'),
            #"frameId"     : ByteMap(20, 4, 'int'),
@@ -97,12 +97,12 @@ PacketTypes = {
            }
        },
    "M_OLD_CONFIGURE_WINDOW": {
-       'pktType': FvwmPkt.M_OLD_CONFIGURE_WINDOW,
+       'pktType': FvwmCPkt.M_OLD_CONFIGURE_WINDOW,
        'pktVars': {
            }
        },
    "M_FOCUS_CHANGE": {
-       'pktType': FvwmPkt.M_FOCUS_CHANGE,
+       'pktType': FvwmCPkt.M_FOCUS_CHANGE,
        'pktVars': {
            #"windowId"    : ByteMap(16, 4, 'ulong'),
            #"frameId"     : ByteMap(20, 4, 'int'),
@@ -112,7 +112,7 @@ PacketTypes = {
            }
        },
    "M_DESTROY_WINDOW": {
-       'pktType': FvwmPkt.M_DESTROY_WINDOW,
+       'pktType': FvwmCPkt.M_DESTROY_WINDOW,
        'pktVars': {
            #"windowId"    : ByteMap(16, 4, 'ulong'),
            #"frameId"     : ByteMap(20, 4, 'int'),
@@ -120,7 +120,7 @@ PacketTypes = {
            }
        },
    "M_ICONIFY": {
-       'pktType': FvwmPkt.M_ICONIFY,
+       'pktType': FvwmCPkt.M_ICONIFY,
        'pktVars': {
            #"windowId"    : ByteMap(16, 4, 'ulong'),
            #"frameId"     : ByteMap(20, 4, 'int'),
@@ -136,7 +136,7 @@ PacketTypes = {
            }
        },
    "M_DEICONIFY": {
-       'pktType': FvwmPkt.M_DEICONIFY,
+       'pktType': FvwmCPkt.M_DEICONIFY,
        'pktVars': {
            #"windowId"    : ByteMap(16, 4, 'ulong'),
            #"frameId"     : ByteMap(20, 4, 'int'),
@@ -152,7 +152,7 @@ PacketTypes = {
            }
        },
    "M_WINDOW_NAME": {
-       'pktType': FvwmPkt.M_WINDOW_NAME,
+       'pktType': FvwmCPkt.M_WINDOW_NAME,
        'pktVars': {
            #"windowId"    : ByteMap(16, 4, 'ulong'),
            #"frameId"     : ByteMap(20, 4, 'int'),
@@ -161,7 +161,7 @@ PacketTypes = {
            }
        },
    "M_ICON_NAME": {
-       'pktType': FvwmPkt.M_ICON_NAME,
+       'pktType': FvwmCPkt.M_ICON_NAME,
        'pktVars': {
            #"windowId"    : ByteMap(16, 4, 'ulong'),
            #"frameId"     : ByteMap(20, 4, 'int'),
@@ -170,7 +170,7 @@ PacketTypes = {
            }
        },
    "M_RES_CLASS": {
-       'pktType': FvwmPkt.M_RES_CLASS,
+       'pktType': FvwmCPkt.M_RES_CLASS,
        'pktVars': {
            #"windowId"    : ByteMap(16, 4, 'ulong'),
            #"frameId"     : ByteMap(20, 4, 'int'),
@@ -179,7 +179,7 @@ PacketTypes = {
            }
        },
    "M_RES_NAME": {
-       'pktType': FvwmPkt.M_RES_NAME,
+       'pktType': FvwmCPkt.M_RES_NAME,
        'pktVars': {
            #"windowId"    : ByteMap(16, 4, 'ulong'),
            #"frameId"     : ByteMap(20, 4, 'int'),
@@ -188,13 +188,13 @@ PacketTypes = {
            }
        },
    "M_END_WINDOWLIST": {
-       'pktType': FvwmPkt.M_END_WINDOWLIST,
+       'pktType': FvwmCPkt.M_END_WINDOWLIST,
        'pktVars': {
            # No Values
            }
        },
    "M_ICON_LOCATION": {
-       'pktType': FvwmPkt.M_ICON_LOCATION,
+       'pktType': FvwmCPkt.M_ICON_LOCATION,
        'pktVars': {
            #"windowId"    : ByteMap(16, 4, 'ulong'),
            #"frameId"     : ByteMap(20, 4, 'int'),
@@ -206,7 +206,7 @@ PacketTypes = {
            }
        },
    "M_MAP": {
-       'pktType': FvwmPkt.M_MAP,
+       'pktType': FvwmCPkt.M_MAP,
        'pktVars': {
            #"windowId"    : ByteMap(16, 4, 'ulong'),
            #"frameId"     : ByteMap(20, 4, 'int'),
@@ -214,7 +214,7 @@ PacketTypes = {
            }
        },
    "M_ERROR": {
-       'pktType': FvwmPkt.M_ERROR,
+       'pktType': FvwmCPkt.M_ERROR,
        'pktVars': {
            #"DUMMY_0"     : ByteMap(16, 4, 'int'),
            #"DUMMY_1"     : ByteMap(20, 4, 'int'),
@@ -223,7 +223,7 @@ PacketTypes = {
            }
        },
    "M_CONFIG_INFO": {
-       'pktType': FvwmPkt.M_CONFIG_INFO,
+       'pktType': FvwmCPkt.M_CONFIG_INFO,
        'pktVars': {
            #"DUMMY_0"     : ByteMap(16, 4, 'int'),
            #"DUMMY_1"     : ByteMap(20, 4, 'int'),
@@ -232,13 +232,13 @@ PacketTypes = {
            }
        },
    "M_END_CONFIG_INFO": {
-       'pktType': FvwmPkt.M_END_CONFIG_INFO,
+       'pktType': FvwmCPkt.M_END_CONFIG_INFO,
        'pktVars': {
            # No Values
            }
        },
    "M_ICON_FILE": {
-       'pktType': FvwmPkt.M_ICON_FILE,
+       'pktType': FvwmCPkt.M_ICON_FILE,
        'pktVars': {
            #"windowId"    : ByteMap(16, 4, 'ulong'),
            #"frameId"     : ByteMap(20, 4, 'int'),
@@ -247,13 +247,13 @@ PacketTypes = {
            }
        },
    "M_DEFAULTICON": {
-       'pktType': FvwmPkt.M_DEFAULTICON,
+       'pktType': FvwmCPkt.M_DEFAULTICON,
        'pktVars': {
            #"name"        : ByteMap(16, None, StringVar) # Variable Length Character String
            }
        },
    "M_STRING": {
-       'pktType': FvwmPkt.M_STRING,
+       'pktType': FvwmCPkt.M_STRING,
        'pktVars': {
            #"windowId"    : ByteMap(16, 4, 'ulong'),
            #"frameId"     : ByteMap(20, 4, 'int'),
@@ -262,10 +262,10 @@ PacketTypes = {
            }
        },
    "M_MINI_ICON": {
-       'pktType': FvwmPkt.M_MINI_ICON,
-       'pktUnion' : 'FvwmPkt.MiniIconPacketUnion',
-       'pktStruct': 'FvwmPkt.MiniIconPacket',
-       'pktSize'  : 'FvwmPkt.MiniIconPacketSize',
+       'pktType': FvwmCPkt.M_MINI_ICON,
+       'pktUnion' : 'FvwmCPkt.MiniIconPacketUnion',
+       'pktStruct': 'FvwmCPkt.MiniIconPacket',
+       'pktSize'  : 'FvwmCPkt.MiniIconPacketSize',
        'pktStart' : 16,
        'pktVars'  : {
            # Rename some packet fields for consistency and clarity
@@ -275,7 +275,7 @@ PacketTypes = {
            }
        },
    "M_WINDOWSHADE": {
-       'pktType': FvwmPkt.M_WINDOWSHADE,
+       'pktType': FvwmCPkt.M_WINDOWSHADE,
        'pktVars': {
            #"windowId"    : ByteMap(16, 4, 'ulong'),
            #"frameId"     : ByteMap(20, 4, 'int'),
@@ -283,7 +283,7 @@ PacketTypes = {
            }
        },
    "M_DEWINDOWSHADE": {
-       'pktType': FvwmPkt.M_DEWINDOWSHADE,
+       'pktType': FvwmCPkt.M_DEWINDOWSHADE,
        'pktVars': {
            #"windowId"    : ByteMap(16, 4, 'ulong'),
            #"frameId"     : ByteMap(20, 4, 'int'),
@@ -291,7 +291,7 @@ PacketTypes = {
            }
        },
    "M_VISIBLE_NAME": {
-       'pktType': FvwmPkt.M_VISIBLE_NAME,
+       'pktType': FvwmCPkt.M_VISIBLE_NAME,
        'pktVars': {
            #"windowId"    : ByteMap(16, 4, 'ulong'),
            #"frameId"     : ByteMap(20, 4, 'int'),
@@ -300,13 +300,13 @@ PacketTypes = {
            }
        },
     "M_SENDCONFIG": {
-        'pktType': FvwmPkt.M_SENDCONFIG,
+        'pktType': FvwmCPkt.M_SENDCONFIG,
         'pktVars': {
             # Never sent by FVWM
             }
         },
     "M_RESTACK": {
-        'pktType': FvwmPkt.M_RESTACK,
+        'pktType': FvwmCPkt.M_RESTACK,
         'pktVars': {
             # Repeating list of these three entries
             #"windowId"    : ByteMap(16, 4, 'ulong'),
@@ -315,10 +315,10 @@ PacketTypes = {
             }
         },
    "M_ADD_WINDOW": {
-       'pktType': FvwmPkt.M_ADD_WINDOW,
-       'pktUnion' : 'FvwmPkt.ConfigWinPacketUnion',
-       'pktStruct': 'FvwmPkt.ConfigWinPacket',
-       'pktSize'  : 'FvwmPkt.ConfigWinPacketSize',
+       'pktType'  : FvwmCPkt.M_ADD_WINDOW,
+       'pktUnion' : 'FvwmCPkt.ConfigWinPacketUnion',
+       'pktStruct': 'FvwmCPkt.ConfigWinPacket',
+       'pktSize'  : 'FvwmCPkt.ConfigWinPacketSize',
        'pktStart' : 16,
        'pktVars'  : {
            # Rename some packet fields for consistency and clarity
@@ -328,10 +328,10 @@ PacketTypes = {
            }
        },
    "M_CONFIGURE_WINDOW": {
-       'pktType'  : FvwmPkt.M_CONFIGURE_WINDOW,
-       'pktUnion' : 'FvwmPkt.ConfigWinPacketUnion',
-       'pktStruct': 'FvwmPkt.ConfigWinPacket',
-       'pktSize'  : 'FvwmPkt.ConfigWinPacketSize',
+       'pktType'  : FvwmCPkt.M_CONFIGURE_WINDOW,
+       'pktUnion' : 'FvwmCPkt.ConfigWinPacketUnion',
+       'pktStruct': 'FvwmCPkt.ConfigWinPacket',
+       'pktSize'  : 'FvwmCPkt.ConfigWinPacketSize',
        'pktStart' : 16,
        'pktVars'  : {
            # Rename some packet fields for consistency and clarity
@@ -341,12 +341,12 @@ PacketTypes = {
            }
        },
     "M_EXTENDED_MSG": {
-        'pktType': FvwmPkt.M_EXTENDED_MSG,
+        'pktType': FvwmCPkt.M_EXTENDED_MSG,
         'pktVars': {
             }
         },
    "MX_VISIBLE_ICON_NAME": {
-       'pktType': FvwmPkt.MX_VISIBLE_ICON_NAME,
+       'pktType': FvwmCPkt.MX_VISIBLE_ICON_NAME,
        'pktVars': {
            #"windowId"    : ByteMap(16, 4,   'ulong'),
            #"frameId"     : ByteMap(20, 4,   'int'),
@@ -355,7 +355,7 @@ PacketTypes = {
            }
        },
    "MX_ENTER_WINDOW": {
-       'pktType': FvwmPkt.MX_ENTER_WINDOW,
+       'pktType': FvwmCPkt.MX_ENTER_WINDOW,
        'pktVars': {
            #"windowId"    : ByteMap(16, 4, 'ulong'),
            #"frameId"     : ByteMap(20, 4, 'int'),
@@ -363,7 +363,7 @@ PacketTypes = {
            }
        },
    "MX_LEAVE_WINDOW": {
-       'pktType': FvwmPkt.MX_LEAVE_WINDOW,
+       'pktType': FvwmCPkt.MX_LEAVE_WINDOW,
        'pktVars': {
            #"windowId"    : ByteMap(16, 4, 'ulong'),
            #"frameId"     : ByteMap(20, 4, 'int'),
@@ -371,7 +371,7 @@ PacketTypes = {
            }
        },
     "MX_PROPERTY_CHANGE": {
-        'pktType': FvwmPkt.MX_PROPERTY_CHANGE,
+        'pktType': FvwmCPkt.MX_PROPERTY_CHANGE,
         'pktVars': {
             #"type"        : ByteMap(16, 4, 'int'),
             #"val1"        : ByteMap(20, 4, 'int'),
@@ -380,7 +380,7 @@ PacketTypes = {
             }
         },
     "MX_REPLY": {
-        'pktType': FvwmPkt.MX_REPLY,
+            'pktType': FvwmCPkt.MX_REPLY,
         'pktVars': {
             #"windowId"    : ByteMap(16, 4, 'ulong'),
             #"frameId"     : ByteMap(20, 4, 'int'),
