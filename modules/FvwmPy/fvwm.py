@@ -7,11 +7,11 @@ import sys
 
 import FvwmPkt
 
-from pybit import ByteMap
-from pybit import ByteMapMeta
-from pybit import uint
-from pybit import ulong
-from pybit import ByteSequence
+#from pybit import ByteMap
+#from pybit import ByteMapMeta
+#from pybit import uint
+#from pybit import ulong
+#from pybit import ByteSequence
 
 def UnsignedToSigned32(value):
     value = socket.ntohl(value)
@@ -58,211 +58,211 @@ StringVar  = "(NullTermLongToString, None)"
 
 PacketTypes = {
    "M_NEW_PAGE": {
-       'pktType': 1 << 0,
+       'pktType': FvwmPkt.M_NEW_PAGE,
        'pktVars': {
-           "vpX"   : ByteMap(16, 4, 'int'),
-           "vpY"   : ByteMap(20, 4, 'int'),
-           "desk"  : ByteMap(24, 4, 'int'),
-           "width" : ByteMap(28, 4, 'int'),
-           "height": ByteMap(32, 4, 'int'),
-           "vpXnum": ByteMap(36, 4, 'int'),
-           "vpYnum": ByteMap(40, 4, 'int'),
+           #"vpX"   : ByteMap(16, 4, 'int'),
+           #"vpY"   : ByteMap(20, 4, 'int'),
+           #"desk"  : ByteMap(24, 4, 'int'),
+           #"width" : ByteMap(28, 4, 'int'),
+           #"height": ByteMap(32, 4, 'int'),
+           #"vpXnum": ByteMap(36, 4, 'int'),
+           #"vpYnum": ByteMap(40, 4, 'int'),
            }
        },
    "M_NEW_DESK": {
-       'pktType': 1 << 1,
+       'pktType': FvwmPkt.M_NEW_DESK,
        'pktVars': {
-           "desk"  : ByteMap(16, 4, 'int'),
+           #"desk"  : ByteMap(16, 4, 'int'),
            }
        },
    "M_OLD_ADD_WINDOW": {
-       'pktType': 1 << 2,
+       'pktType': FvwmPkt.M_OLD_ADD_WINDOW,
        'pktVars': {
            }
        },
    "M_RAISE_WINDOW": {
-       'pktType': 1 << 3,
+       'pktType': FvwmPkt.M_RAISE_WINDOW,
        'pktVars': {
-           "windowId"    : ByteMap(16, 4, 'ulong'),
-           "frameId"     : ByteMap(20, 4, 'int'),
-           "fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
+           #"windowId"    : ByteMap(16, 4, 'ulong'),
+           #"frameId"     : ByteMap(20, 4, 'int'),
+           #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
            }
        },
    "M_LOWER_WINDOW": {
-       'pktType': 1 << 4,
+       'pktType': FvwmPkt.M_LOWER_WINDOW,
        'pktVars': {
-           "windowId"    : ByteMap(16, 4, 'ulong'),
-           "frameId"     : ByteMap(20, 4, 'int'),
-           "fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
+           #"windowId"    : ByteMap(16, 4, 'ulong'),
+           #"frameId"     : ByteMap(20, 4, 'int'),
+           #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
            }
        },
    "M_OLD_CONFIGURE_WINDOW": {
-       'pktType': 1 << 5,
+       'pktType': FvwmPkt.M_OLD_CONFIGURE_WINDOW,
        'pktVars': {
            }
        },
    "M_FOCUS_CHANGE": {
-       'pktType': 1 << 6,
+       'pktType': FvwmPkt.M_FOCUS_CHANGE,
        'pktVars': {
-           "windowId"    : ByteMap(16, 4, 'ulong'),
-           "frameId"     : ByteMap(20, 4, 'int'),
-           "changeType"  : ByteMap(24, 4, 'ulong'),
-           "colorHlText" : ByteMap(28, 4, 'int'),
-           "colorHlBg"   : ByteMap(32, 4, 'int'),
+           #"windowId"    : ByteMap(16, 4, 'ulong'),
+           #"frameId"     : ByteMap(20, 4, 'int'),
+           #"changeType"  : ByteMap(24, 4, 'ulong'),
+           #"colorHlText" : ByteMap(28, 4, 'int'),
+           #"colorHlBg"   : ByteMap(32, 4, 'int'),
            }
        },
    "M_DESTROY_WINDOW": {
-       'pktType': 1 << 7,
+       'pktType': FvwmPkt.M_DESTROY_WINDOW,
        'pktVars': {
-           "windowId"    : ByteMap(16, 4, 'ulong'),
-           "frameId"     : ByteMap(20, 4, 'int'),
-           "fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
+           #"windowId"    : ByteMap(16, 4, 'ulong'),
+           #"frameId"     : ByteMap(20, 4, 'int'),
+           #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
            }
        },
    "M_ICONIFY": {
-       'pktType': 1 << 8,
+       'pktType': FvwmPkt.M_ICONIFY,
        'pktVars': {
-           "windowId"    : ByteMap(16, 4, 'ulong'),
-           "frameId"     : ByteMap(20, 4, 'int'),
-           "fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
-           "iconXPos"    : ByteMap(28, 4, 'int'),
-           "iconYPos"    : ByteMap(32, 4, 'int'),
-           "iconWidth"   : ByteMap(36, 4, 'int'),
-           "iconHeight"  : ByteMap(40, 4, 'int'),
-           "frameXPos"   : ByteMap(44, 4, 'int'),
-           "frameYPos"   : ByteMap(48, 4, 'int'),
-           "frameWidth"  : ByteMap(52, 4, 'int'),
-           "frameHeight" : ByteMap(56, 4, 'int'),
+           #"windowId"    : ByteMap(16, 4, 'ulong'),
+           #"frameId"     : ByteMap(20, 4, 'int'),
+           #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
+           #"iconXPos"    : ByteMap(28, 4, 'int'),
+           #"iconYPos"    : ByteMap(32, 4, 'int'),
+           #"iconWidth"   : ByteMap(36, 4, 'int'),
+           #"iconHeight"  : ByteMap(40, 4, 'int'),
+           #"frameXPos"   : ByteMap(44, 4, 'int'),
+           #"frameYPos"   : ByteMap(48, 4, 'int'),
+           #"frameWidth"  : ByteMap(52, 4, 'int'),
+           #"frameHeight" : ByteMap(56, 4, 'int'),
            }
        },
    "M_DEICONIFY": {
-       'pktType': 1 << 9,
+       'pktType': FvwmPkt.M_DEICONIFY,
        'pktVars': {
-           "windowId"    : ByteMap(16, 4, 'ulong'),
-           "frameId"     : ByteMap(20, 4, 'int'),
-           "fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
-           "iconXPos"    : ByteMap(28, 4, 'int'),
-           "iconYPos"    : ByteMap(32, 4, 'int'),
-           "iconWidth"   : ByteMap(36, 4, 'int'),
-           "iconHeight"  : ByteMap(40, 4, 'int'),
-           "frameXPos"   : ByteMap(44, 4, 'int'),
-           "frameYPos"   : ByteMap(48, 4, 'int'),
-           "frameWidth"  : ByteMap(52, 4, 'int'),
-           "frameHeight" : ByteMap(56, 4, 'int'),
+           #"windowId"    : ByteMap(16, 4, 'ulong'),
+           #"frameId"     : ByteMap(20, 4, 'int'),
+           #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
+           #"iconXPos"    : ByteMap(28, 4, 'int'),
+           #"iconYPos"    : ByteMap(32, 4, 'int'),
+           #"iconWidth"   : ByteMap(36, 4, 'int'),
+           #"iconHeight"  : ByteMap(40, 4, 'int'),
+           #"frameXPos"   : ByteMap(44, 4, 'int'),
+           #"frameYPos"   : ByteMap(48, 4, 'int'),
+           #"frameWidth"  : ByteMap(52, 4, 'int'),
+           #"frameHeight" : ByteMap(56, 4, 'int'),
            }
        },
    "M_WINDOW_NAME": {
-       'pktType': 1 << 10,
+       'pktType': FvwmPkt.M_WINDOW_NAME,
        'pktVars': {
-           "windowId"    : ByteMap(16, 4, 'ulong'),
-           "frameId"     : ByteMap(20, 4, 'int'),
-           "fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
-           "name"        : ByteMap(28, None, StringVar) # Variable Length Character String
+           #"windowId"    : ByteMap(16, 4, 'ulong'),
+           #"frameId"     : ByteMap(20, 4, 'int'),
+           #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
+           #"name"        : ByteMap(28, None, StringVar) # Variable Length Character String
            }
        },
    "M_ICON_NAME": {
-       'pktType': 1 << 11,
+       'pktType': FvwmPkt.M_ICON_NAME,
        'pktVars': {
-           "windowId"    : ByteMap(16, 4, 'ulong'),
-           "frameId"     : ByteMap(20, 4, 'int'),
-           "fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
-           "name"        : ByteMap(28, None, StringVar) # Variable Length Character String
+           #"windowId"    : ByteMap(16, 4, 'ulong'),
+           #"frameId"     : ByteMap(20, 4, 'int'),
+           #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
+           #"name"        : ByteMap(28, None, StringVar) # Variable Length Character String
            }
        },
    "M_RES_CLASS": {
-       'pktType': 1 << 12,
+       'pktType': FvwmPkt.M_RES_CLASS,
        'pktVars': {
-           "windowId"    : ByteMap(16, 4, 'ulong'),
-           "frameId"     : ByteMap(20, 4, 'int'),
-           "fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
-           "name"        : ByteMap(28, None, StringVar) # Variable Length Character String
+           #"windowId"    : ByteMap(16, 4, 'ulong'),
+           #"frameId"     : ByteMap(20, 4, 'int'),
+           #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
+           #"name"        : ByteMap(28, None, StringVar) # Variable Length Character String
            }
        },
    "M_RES_NAME": {
-       'pktType': 1 << 13,
+       'pktType': FvwmPkt.M_RES_NAME,
        'pktVars': {
-           "windowId"    : ByteMap(16, 4, 'ulong'),
-           "frameId"     : ByteMap(20, 4, 'int'),
-           "fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
-           "name"        : ByteMap(28, None, StringVar) # Variable Length Character String
+           #"windowId"    : ByteMap(16, 4, 'ulong'),
+           #"frameId"     : ByteMap(20, 4, 'int'),
+           #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
+           #"name"        : ByteMap(28, None, StringVar) # Variable Length Character String
            }
        },
    "M_END_WINDOWLIST": {
-       'pktType': 1 << 14,
+       'pktType': FvwmPkt.M_END_WINDOWLIST,
        'pktVars': {
            # No Values
            }
        },
    "M_ICON_LOCATION": {
-       'pktType': 1 << 15,
+       'pktType': FvwmPkt.M_ICON_LOCATION,
        'pktVars': {
-           "windowId"    : ByteMap(16, 4, 'ulong'),
-           "frameId"     : ByteMap(20, 4, 'int'),
-           "fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
-           "xPos"        : ByteMap(28, 4, 'int'),
-           "yPos"        : ByteMap(32, 4, 'int'),
-           "width"       : ByteMap(36, 4, 'int'),
-           "height"      : ByteMap(40, 4, 'int'),
+           #"windowId"    : ByteMap(16, 4, 'ulong'),
+           #"frameId"     : ByteMap(20, 4, 'int'),
+           #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
+           #"xPos"        : ByteMap(28, 4, 'int'),
+           #"yPos"        : ByteMap(32, 4, 'int'),
+           #"width"       : ByteMap(36, 4, 'int'),
+           #"height"      : ByteMap(40, 4, 'int'),
            }
        },
    "M_MAP": {
-       'pktType': 1 << 16,
+       'pktType': FvwmPkt.M_MAP,
        'pktVars': {
-           "windowId"    : ByteMap(16, 4, 'ulong'),
-           "frameId"     : ByteMap(20, 4, 'int'),
-           "fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
+           #"windowId"    : ByteMap(16, 4, 'ulong'),
+           #"frameId"     : ByteMap(20, 4, 'int'),
+           #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
            }
        },
    "M_ERROR": {
-       'pktType': 1 << 17,
+       'pktType': FvwmPkt.M_ERROR,
        'pktVars': {
-           "DUMMY_0"     : ByteMap(16, 4, 'int'),
-           "DUMMY_1"     : ByteMap(20, 4, 'int'),
-           "DUMMY_2"     : ByteMap(24, 4, 'int'),
-           "error"       : ByteMap(28, None, StringVar) # Variable Length Character String
+           #"DUMMY_0"     : ByteMap(16, 4, 'int'),
+           #"DUMMY_1"     : ByteMap(20, 4, 'int'),
+           #"DUMMY_2"     : ByteMap(24, 4, 'int'),
+           #"error"       : ByteMap(28, None, StringVar) # Variable Length Character String
            }
        },
    "M_CONFIG_INFO": {
-       'pktType': 1 << 18,
+       'pktType': FvwmPkt.M_CONFIG_INFO,
        'pktVars': {
-           "DUMMY_0"     : ByteMap(16, 4, 'int'),
-           "DUMMY_1"     : ByteMap(20, 4, 'int'),
-           "DUMMY_2"     : ByteMap(24, 4, 'int'),
-           "text"        : ByteMap(28, None, StringVar) # Variable Length Character String
+           #"DUMMY_0"     : ByteMap(16, 4, 'int'),
+           #"DUMMY_1"     : ByteMap(20, 4, 'int'),
+           #"DUMMY_2"     : ByteMap(24, 4, 'int'),
+           #"text"        : ByteMap(28, None, StringVar) # Variable Length Character String
            }
        },
    "M_END_CONFIG_INFO": {
-       'pktType': 1 << 19,
+       'pktType': FvwmPkt.M_END_CONFIG_INFO,
        'pktVars': {
            # No Values
            }
        },
    "M_ICON_FILE": {
-       'pktType': 1 << 20,
+       'pktType': FvwmPkt.M_ICON_FILE,
        'pktVars': {
-           "windowId"    : ByteMap(16, 4, 'ulong'),
-           "frameId"     : ByteMap(20, 4, 'int'),
-           "fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
-           "name"        : ByteMap(28, None, StringVar) # Variable Length Character String
+           #"windowId"    : ByteMap(16, 4, 'ulong'),
+           #"frameId"     : ByteMap(20, 4, 'int'),
+           #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
+           #"name"        : ByteMap(28, None, StringVar) # Variable Length Character String
            }
        },
    "M_DEFAULTICON": {
-       'pktType': 1 << 21,
+       'pktType': FvwmPkt.M_DEFAULTICON,
        'pktVars': {
-           "name"        : ByteMap(16, None, StringVar) # Variable Length Character String
+           #"name"        : ByteMap(16, None, StringVar) # Variable Length Character String
            }
        },
    "M_STRING": {
-       'pktType': 1 << 22,
+       'pktType': FvwmPkt.M_STRING,
        'pktVars': {
-           "windowId"    : ByteMap(16, 4, 'ulong'),
-           "frameId"     : ByteMap(20, 4, 'int'),
-           "fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
-           "text"        : ByteMap(28, None, StringVar) # Variable Length Character String
+           #"windowId"    : ByteMap(16, 4, 'ulong'),
+           #"frameId"     : ByteMap(20, 4, 'int'),
+           #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
+           #"text"        : ByteMap(28, None, StringVar) # Variable Length Character String
            }
        },
    "M_MINI_ICON": {
-       'pktType': 1 << 23,
+       'pktType': FvwmPkt.M_MINI_ICON,
        'pktUnion' : 'FvwmPkt.MiniIconPacketUnion',
        'pktStruct': 'FvwmPkt.MiniIconPacket',
        'pktSize'  : 'FvwmPkt.MiniIconPacketSize',
@@ -272,58 +272,50 @@ PacketTypes = {
            "windowId"   : 'w',
            "frameId"    : 'frame',
            "fvwmDbEntry": 'fvwmwin',
-
-          ## XXX This should be defined using the fvwm2 source code file
-          ##     libs/vpacket.h via a swig module!
-          #"windowId"    : ByteMap(16, 4, 'ulong'),
-          #"frameId"     : ByteMap(20, 4, 'int'),
-          #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
-           # The Icon
-           # The Icon Filename
            }
        },
    "M_WINDOWSHADE": {
-       'pktType': 1 << 24,
+       'pktType': FvwmPkt.M_WINDOWSHADE,
        'pktVars': {
-           "windowId"    : ByteMap(16, 4, 'ulong'),
-           "frameId"     : ByteMap(20, 4, 'int'),
-           "fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
+           #"windowId"    : ByteMap(16, 4, 'ulong'),
+           #"frameId"     : ByteMap(20, 4, 'int'),
+           #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
            }
        },
    "M_DEWINDOWSHADE": {
-       'pktType': 1 << 25,
+       'pktType': FvwmPkt.M_DEWINDOWSHADE,
        'pktVars': {
-           "windowId"    : ByteMap(16, 4, 'ulong'),
-           "frameId"     : ByteMap(20, 4, 'int'),
-           "fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
+           #"windowId"    : ByteMap(16, 4, 'ulong'),
+           #"frameId"     : ByteMap(20, 4, 'int'),
+           #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
            }
        },
    "M_VISIBLE_NAME": {
-       'pktType': 1 << 26,
+       'pktType': FvwmPkt.M_VISIBLE_NAME,
        'pktVars': {
-           "windowId"    : ByteMap(16, 4, 'ulong'),
-           "frameId"     : ByteMap(20, 4, 'int'),
-           "fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
-           "name"        : ByteMap(28, None, StringVar) # Variable Length Character String
+           #"windowId"    : ByteMap(16, 4, 'ulong'),
+           #"frameId"     : ByteMap(20, 4, 'int'),
+           #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
+           #"name"        : ByteMap(28, None, StringVar) # Variable Length Character String
            }
        },
     "M_SENDCONFIG": {
-        'pktType': 1 << 27,
+        'pktType': FvwmPkt.M_SENDCONFIG,
         'pktVars': {
             # Never sent by FVWM
             }
         },
     "M_RESTACK": {
-        'pktType': 1 << 28,
+        'pktType': FvwmPkt.M_RESTACK,
         'pktVars': {
             # Repeating list of these three entries
-            "windowId"    : ByteMap(16, 4, 'ulong'),
-            "frameId"     : ByteMap(20, 4, 'int'),
-            "fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
+            #"windowId"    : ByteMap(16, 4, 'ulong'),
+            #"frameId"     : ByteMap(20, 4, 'int'),
+            #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
             }
         },
    "M_ADD_WINDOW": {
-       'pktType': 1 << 29,
+       'pktType': FvwmPkt.M_ADD_WINDOW,
        'pktUnion' : 'FvwmPkt.ConfigWinPacketUnion',
        'pktStruct': 'FvwmPkt.ConfigWinPacket',
        'pktSize'  : 'FvwmPkt.ConfigWinPacketSize',
@@ -333,44 +325,10 @@ PacketTypes = {
            "windowId"   : 'w',
            "frameId"    : 'frame',
            "fvwmDbEntry": 'fvwmwin',
-      #'pktVars': {
-      #    # XXX This should be defined using the fvwm2 source code file
-      #    #     libs/vpacket.h via a swig module!
-      #    "windowId"           : ByteMap(16,   4, 'ulong'),
-      #    "frameId"            : ByteMap(20,   4, 'int'),
-      #    "fvwmDbEntry"        : ByteMap(24,   4, 'ulong'), # Not Useful to us
-      #    "frameX"             : ByteMap(28,   4, 'int'),
-      #    "frameY"             : ByteMap(32,   4, 'int'),
-      #    "frameWidth"         : ByteMap(36,   4, 'ulong'),
-      #    "frameHeight"        : ByteMap(40,   4, 'ulong'),
-      #    "desk"               : ByteMap(44,   4, 'ulong'),
-      #    "layer"              : ByteMap(48,   4, 'ulong'),
-      #    "hintsBaseWidth"     : ByteMap(52,   4, 'ulong'),
-      #    "hintsBaseHeight"    : ByteMap(56,   4, 'ulong'),
-      #    "hintsWidthInc"      : ByteMap(60,   4, 'ulong'),
-      #    "hintsHeightInc"     : ByteMap(64,   4, 'ulong'),
-      #    "hintsOrigWidthInc"  : ByteMap(68,   4, 'ulong'),
-      #    "hintsOrigHeightInc" : ByteMap(72,   4, 'ulong'),
-      #    "hintsMinWidth"      : ByteMap(76,   4, 'ulong'),
-      #    "hintsMinHeight"     : ByteMap(80,   4, 'ulong'),
-      #    "hintsMaxWidth"      : ByteMap(84,   4, 'ulong'),
-      #    "hintsMaxHeight"     : ByteMap(88,   4, 'ulong'),
-      #    "iconWindow"         : ByteMap(92,   4, 'ulong'),
-      #    "iconPixmapWindow"   : ByteMap(96,   4, 'ulong'),
-      #    "hintsWindowGravity" : ByteMap(100,  4, 'ulong'),
-      #    "textPixel"          : ByteMap(104,  4, 'ulong'),
-      #    "backPixel"          : ByteMap(108,  4, 'ulong'),
-      #    "ewmhHintLayer"      : ByteMap(112,  4, 'ulong'),
-      #    "ewmhHintDesktop"    : ByteMap(116,  4, 'ulong'),
-      #    "ewmhWindowType"     : ByteMap(120,  4, 'ulong'),
-      #    "titleHeight"        : ByteMap(124,  2, 'uint'),
-      #    "borderWidth"        : ByteMap(126,  2, 'uint'),
-      #    "DUMMY_0"            : ByteMap(128,  2, 'uint'),
-      #    "DUMMY_1"            : ByteMap(130,  2, 'uint'),
            }
        },
    "M_CONFIGURE_WINDOW": {
-       'pktType'  : 1 << 30,
+       'pktType'  : FvwmPkt.M_CONFIGURE_WINDOW,
        'pktUnion' : 'FvwmPkt.ConfigWinPacketUnion',
        'pktStruct': 'FvwmPkt.ConfigWinPacket',
        'pktSize'  : 'FvwmPkt.ConfigWinPacketSize',
@@ -380,88 +338,54 @@ PacketTypes = {
            "windowId"   : 'w',
            "frameId"    : 'frame',
            "fvwmDbEntry": 'fvwmwin',
-
-           # XXX This should be defined using the fvwm2 source code file
-           #     libs/vpacket.h via a swig module!
-           #"windowId"           : ByteMap(16,   4, 'ulong'),
-           #"frameId"            : ByteMap(20,   4, 'int'),
-           #"fvwmDbEntry"        : ByteMap(24,   4, 'ulong'), # Not Useful to us
-           #"frameX"             : ByteMap(28,   4, 'int'),
-           #"frameY"             : ByteMap(32,   4, 'int'),
-           #"frameWidth"         : ByteMap(36,   4, 'ulong'),
-           #"frameHeight"        : ByteMap(40,   4, 'ulong'),
-           #"desk"               : ByteMap(44,   4, 'ulong'),
-           #"layer"              : ByteMap(48,   4, 'ulong'),
-           #"hintsBaseWidth"     : ByteMap(52,   4, 'ulong'),
-           #"hintsBaseHeight"    : ByteMap(56,   4, 'ulong'),
-           #"hintsWidthInc"      : ByteMap(60,   4, 'ulong'),
-           #"hintsHeightInc"     : ByteMap(64,   4, 'ulong'),
-           #"hintsOrigWidthInc"  : ByteMap(68,   4, 'ulong'),
-           #"hintsOrigHeightInc" : ByteMap(72,   4, 'ulong'),
-           #"hintsMinWidth"      : ByteMap(76,   4, 'ulong'),
-           #"hintsMinHeight"     : ByteMap(80,   4, 'ulong'),
-           #"hintsMaxWidth"      : ByteMap(84,   4, 'ulong'),
-           #"hintsMaxHeight"     : ByteMap(88,   4, 'ulong'),
-           #"iconWindow"         : ByteMap(92,   4, 'ulong'),
-           #"iconPixmapWindow"   : ByteMap(96,   4, 'ulong'),
-           #"hintsWindowGravity" : ByteMap(100,  4, 'ulong'),
-           #"textPixel"          : ByteMap(104,  4, 'ulong'),
-           #"backPixel"          : ByteMap(108,  4, 'ulong'),
-           #"ewmhHintLayer"      : ByteMap(112,  4, 'ulong'),
-           #"ewmhHintDesktop"    : ByteMap(116,  4, 'ulong'),
-           #"ewmhWindowType"     : ByteMap(120,  4, 'ulong'),
-           #"titleHeight"        : ByteMap(124,  2, 'uint'),
-           #"borderWidth"        : ByteMap(126,  2, 'uint'),
-           #"DUMMY_0"            : ByteMap(128,  2, 'uint'),
-           #"DUMMY_1"            : ByteMap(130,  2, 'uint'),
            }
        },
     "M_EXTENDED_MSG": {
-        'pktType': 1 << 31,
+        'pktType': FvwmPkt.M_EXTENDED_MSG,
         'pktVars': {
             }
         },
    "MX_VISIBLE_ICON_NAME": {
-       'pktType': 1 <<  0 | 1 << 31,
+       'pktType': FvwmPkt.MX_VISIBLE_ICON_NAME,
        'pktVars': {
-           "windowId"    : ByteMap(16, 4,   'ulong'),
-           "frameId"     : ByteMap(20, 4,   'int'),
-           "fvwmDbEntry" : ByteMap(24, 4,   'ulong'), # Not Useful to us
-           "name"        : ByteMap(28, None, StringVar) # Variable Length Character String
+           #"windowId"    : ByteMap(16, 4,   'ulong'),
+           #"frameId"     : ByteMap(20, 4,   'int'),
+           #"fvwmDbEntry" : ByteMap(24, 4,   'ulong'), # Not Useful to us
+           #"name"        : ByteMap(28, None, StringVar) # Variable Length Character String
            }
        },
    "MX_ENTER_WINDOW": {
-       'pktType': 1 <<  1 | 1 << 31,
+       'pktType': FvwmPkt.MX_ENTER_WINDOW,
        'pktVars': {
-           "windowId"    : ByteMap(16, 4, 'ulong'),
-           "frameId"     : ByteMap(20, 4, 'int'),
-           "fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
+           #"windowId"    : ByteMap(16, 4, 'ulong'),
+           #"frameId"     : ByteMap(20, 4, 'int'),
+           #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
            }
        },
    "MX_LEAVE_WINDOW": {
-       'pktType': 1 <<  2 | 1 << 31,
+       'pktType': FvwmPkt.MX_LEAVE_WINDOW,
        'pktVars': {
-           "windowId"    : ByteMap(16, 4, 'ulong'),
-           "frameId"     : ByteMap(20, 4, 'int'),
-           "fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
+           #"windowId"    : ByteMap(16, 4, 'ulong'),
+           #"frameId"     : ByteMap(20, 4, 'int'),
+           #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
            }
        },
     "MX_PROPERTY_CHANGE": {
-        'pktType': 1 <<  3 | 1 << 31,
+        'pktType': FvwmPkt.MX_PROPERTY_CHANGE,
         'pktVars': {
-            "type"        : ByteMap(16, 4, 'int'),
-            "val1"        : ByteMap(20, 4, 'int'),
-            "val2"        : ByteMap(24, 4, 'int'),
-            "text"        : ByteMap(28, None, StringVar) # Variable Length Character String
+            #"type"        : ByteMap(16, 4, 'int'),
+            #"val1"        : ByteMap(20, 4, 'int'),
+            #"val2"        : ByteMap(24, 4, 'int'),
+            #"text"        : ByteMap(28, None, StringVar) # Variable Length Character String
             }
         },
     "MX_REPLY": {
-        'pktType': 1 <<  4 | 1 << 31,
+        'pktType': FvwmPkt.MX_REPLY,
         'pktVars': {
-            "windowId"    : ByteMap(16, 4, 'ulong'),
-            "frameId"     : ByteMap(20, 4, 'int'),
-            "fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
-            "text"        : ByteMap(28, None, StringVar) # Variable Length Character String
+            #"windowId"    : ByteMap(16, 4, 'ulong'),
+            #"frameId"     : ByteMap(20, 4, 'int'),
+            #"fvwmDbEntry" : ByteMap(24, 4, 'ulong'), # Not Useful to us
+            #"text"        : ByteMap(28, None, StringVar) # Variable Length Character String
             }
         },
 }
@@ -478,12 +402,12 @@ class FvwmPacketException(FvwmModuleException): pass
 class FvwmPacketIdException(FvwmPacketException): pass
 
 class FvwmPacket(object):
-    __metaclass__ =  ByteMapMeta
-    syncpat       =  ByteMap(0,   4, ulong)
-    packetType    =  ByteMap(4,   4, ulong)
-    length        =  ByteMap(8,   4, (_GetLength,    None))
-    time          =  ByteMap(12,  4, ulong)
-    packetData    =  ByteMap(16, None)
+    #__metaclass__ =  ByteMapMeta
+    #syncpat       =  ByteMap(0,   4, ulong)
+    #packetType    =  ByteMap(4,   4, ulong)
+    #length        =  ByteMap(8,   4, (_GetLength,    None))
+    #time          =  ByteMap(12,  4, ulong)
+    #packetData    =  ByteMap(16, None)
     headerBytes   =  16
     pktClasses    =  {}
 

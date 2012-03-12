@@ -1,4 +1,7 @@
-FvwmPkt.py
 *_wrap.cpp
+*_wrap.c
 *.so
 fvwm_mod.h
+FvwmCPkt.py
+module_mod.h
+
