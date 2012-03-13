@@ -1,0 +1,8 @@
+FvwmKB - FVWM Keyboard-Based Desktop Environment
+================================================
+Build Requirements
+==================
+
+- FVWM Source Code.  Version must match that listed in the Makefile
+- Python 2.x+ Development Libraries.
+- SWIG 2.x
