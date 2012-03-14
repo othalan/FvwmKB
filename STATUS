@@ -1,3 +1,8 @@
+2012/03/14:
+  - Module communication protocol is working for all non-swig packets
+  - SWIG packet data can be get/set
+  - SWIG packets need a wrapper class to make them look like non-swig packets
+    so that everything can be handled the same after creation.
 2012/03/12:
   - Created new packet definition file FvwmPkt.py.  This will eventually replace
     the old definitions in 'fvwm.py'
