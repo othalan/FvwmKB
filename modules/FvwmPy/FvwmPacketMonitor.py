@@ -2,14 +2,13 @@
 
 import sys
 
-from fvwm import FvwmModule
-from fvwm import FvwmPacket
+from FvwmModule import FvwmModule
 
 class FvwmPacketMonitor(FvwmModule):
     def __init__(self, *args):
+        super(FvwmPacketMonitor, self).__init__(*args)
         self.registerCallback('*', self.PrintAllPackets)
         self.__ofd = sys.stderr
-        super(FvwmPacketMonitor, self).__init__(*args)
 
     def ParseOptionalArgs(self, *args):
         if len(args) >= 1:
@@ -19,10 +18,10 @@ class FvwmPacketMonitor(FvwmModule):
         #self.send(0, "Send_ConfigInfo")
 
     def PrintAllPackets(self, packet):
-        print >>self.__ofd, "%(syncpat)08X %(packetType)08X %(_raw_length)08X %(time)08X:" % packet,
+        print >>self.__ofd, "%(syncpat)08X %(type)08X %(raw_length)08X %(time)08X:" % packet.header,
         print >>self.__ofd, type(packet)
         keys = list(packet.fields)
-        keys.sort()
+        #keys.sort()
         for field in keys:
             try:
                 print >>self.__ofd, " %-20s ==> %20s" % (field, packet[field])
@@ -41,7 +40,9 @@ class FvwmPacketMonitor(FvwmModule):
 if __name__ == "__main__":
     try:
         module = FvwmPacketMonitor(*sys.argv)
+        module.run()
     except KeyboardInterrupt, ex:
         pass
+    print 'Clean Module Exit!'
 
 # vim:set ts=4 sw=4 et nu:
