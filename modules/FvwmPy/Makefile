@@ -12,8 +12,6 @@ LDFLAGS  = $(shell python2.7-config --ldflags)
 .PHONY: all
 all: _FvwmCPkt.so
 
-FvwmCPkt_wrap.c: fvwm_extension.h
-
 _%.so: %_wrap.o
 	gcc -shared $(LDFLAGS) $^ -o $@
 

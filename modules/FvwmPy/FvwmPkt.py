@@ -322,12 +322,9 @@ PacketTypes = {
             ]
         },
    FvwmCPkt.M_MINI_ICON: {
-        'name': "M_MINI_ICON",
-        'type': "swig",
-        'pktUnion' : 'FvwmCPkt.MiniIconPacketUnion',
-        'pktStruct': 'FvwmCPkt.MiniIconPacket',
-        'pktSize'  : 'FvwmCPkt.MiniIconPacketSize',
-        'pktStart' : 16,
+        'name'     : "M_MINI_ICON",
+        'type'     : "swig",
+        'swigType' : 'FvwmCPkt.MiniIconPacket',
         'fields'   : {
             # Rename some packet fields for consistency and clarity
             "windowId"   : 'w',
@@ -378,12 +375,9 @@ PacketTypes = {
             ]
         },
    FvwmCPkt.M_ADD_WINDOW: {
-        'name'  : "M_ADD_WINDOW",
-        'type': "swig",
-        'pktUnion' : 'FvwmCPkt.ConfigWinPacketUnion',
-        'pktStruct': 'FvwmCPkt.ConfigWinPacket',
-        'pktSize'  : 'FvwmCPkt.ConfigWinPacketSize',
-        'pktStart' : 16,
+        'name'    : "M_ADD_WINDOW",
+        'type'    : "swig",
+        'swigType': 'FvwmCPkt.ConfigWinPacket',
         'fields'  : {
             # Rename some packet fields for consistency and clarity
             "windowId"   : 'w',
@@ -394,10 +388,7 @@ PacketTypes = {
    FvwmCPkt.M_CONFIGURE_WINDOW: {
         'name'     : "M_CONFIGURE_WINDOW",
         'type'     : "swig",
-        'pktUnion' : 'FvwmCPkt.ConfigWinPacketUnion',
-        'pktStruct': 'FvwmCPkt.ConfigWinPacket',
-        'pktSize'  : 'FvwmCPkt.ConfigWinPacketSize',
-        'pktStart' : 16,
+        'swigType' : 'FvwmCPkt.ConfigWinPacket',
         'fields'  : {
             # Rename some packet fields for consistency and clarity
             "windowId"   : 'w',
