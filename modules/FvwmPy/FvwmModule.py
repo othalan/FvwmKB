@@ -171,14 +171,12 @@ of these methods:
             packetData  = ''
             while len(packetData) < len(packetHeader):
                 received = self.fdRecv.read(len(packetHeader) - len(packetData))
-                print 'bar', repr(received)
                 if len(received) > 0:
                     packetData += received
                 else:
                     # We have been closed down, so exit the packet monitor
                     return
             packetHeader.data = packetData
-            packetData        = ''
             while len(packetData) < packetHeader.length:
                 received = self.fdRecv.read(packetHeader.length - len(packetData))
                 if len(received) > 0:
@@ -187,14 +185,26 @@ of these methods:
                     # We have been closed down, so exit the packet monitor
                     return
 
-            pkt      = FvwmPkt.getFvwmPktObj(packetHeader.type,
-                                             packetHeader.length)
+            try:
+                pkt      = FvwmPkt.getFvwmPktObj(packetHeader.type,
+                                                 packetHeader.length)
+            except KeyError,ex:
+                print >>sys.stderr, "Packet ID Not Found: %08X" % packetHeader.type
+                print >>sys.stderr, ''.join(["%02X"%ord(x) for x in packetData])
+                sys.stderr.flush()
+                continue
+            except NotImplementedError,ex:
+                print >>sys.stderr, "Packet ID Not Implemented: %08X" % packetHeader.type
+                print >>sys.stderr, ''.join(["%02X"%ord(x) for x in packetData])
+                sys.stderr.flush()
+                continue
 
             if pkt.type == FvwmPkt.PKT_TYPE_SWIG:
-                pass
+                print >>sys.stderr,"Unsupported Packet: %08X" % pkt.type
+                continue
                 #pkt.cPktSet(packetData)
             else:
-                pkt.data = packetHeader.data + packetData
+                pkt.data = packetData
 
             for (packetName, cbFunc) in self.__cbRegistry:
                 if packetName == pkt.name or packetName == '*':
@@ -202,7 +212,7 @@ of these methods:
 
     def send(self, window, message, exit=False):
         try:
-            print "SEND TO [%X]: %s" % (window, message)
+            print >> sys.stderr,"SEND TO [%X]: %s" % (window, message)
             win=ByteSequence(window, 4)
             length=ByteSequence(len(message), 4)
             doexit=ByteSequence(0 if exit else 1, 4)

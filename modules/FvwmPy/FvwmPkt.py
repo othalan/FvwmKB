@@ -4,6 +4,7 @@
 
 import ctypes
 import math
+import sys
 import FvwmCPkt
 
 PKT_TYPE_STATIC  = "static"
@@ -557,16 +558,16 @@ def getFvwmPktObj(pktType, pktLen = -1):
     pktDict = PacketTypes[pktType]
     if pktLen >= 0 and pktDict['type'] == PKT_TYPE_DYNAMIC:
         # Calculate the packet base size if needed...
-        if pktDict['baseSize'] == -1:
+        if not pktDict.has_key('baseSize'):
             resizeable = pktDict['fields'][-1]
-            pktDict['fields'] = pktDict['fields'][:]
+            pktDict['fields'] = pktDict['fields'][:-1]
             __createCtypeStruct(pktDict)
             pktDict['fields'].append(resizeable)
-            pktDict['baseSize'] = len(pktDict['class'])
+            pktDict['baseSize'] = len(pktDict['class']())
 
         # Calculate the packet current size...
         pktDict['fields'][-1] = (pktDict['fields'][-1][0],
-                                 ctypes.c_char * (pktLen - pktDict['baseSize']))
+                                 'ctypes.c_char * %i' % (pktLen - pktDict['baseSize']))
 
         # Crete the new class
         __createCtypeStruct(pktDict)
@@ -575,7 +576,7 @@ def getFvwmPktObj(pktType, pktLen = -1):
         __createCtypeStruct(pktDict)
 
     elif not pktDict.has_key('class') and pktDict['type'] == PKT_TYPE_SWIG:
-        raise NotImplemented, "ERROR:  Swig Classes Not Yet Implemented!"
+        raise NotImplementedError, "ERROR:  Swig Classes Not Yet Implemented!"
 
     # Create the object and return it
     return pktDict['class']()
