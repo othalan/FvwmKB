@@ -27,17 +27,7 @@ class FvwmPacketMonitor(FvwmModule):
         keys = list(packet.fields)
         #keys.sort()
         for field in keys:
-            try:
-                print >>self.__ofd, " %-20s ==> %20s" % (field, packet[field])
-            except Exception, ex:
-                if packet.pktType != FvwmPacket.TYPE_C_STRUCT:
-                    self.__ofd.write('ERROR: %s ==> %s: %s\n' % (field, packet["_raw_%s" % field], ex))
-                    self.__ofd.flush()
-                    raise
-                else:
-                    self.__ofd.write('ERROR: %s ==> %s: %s\n' % (field, packet[field], ex))
-                    self.__ofd.flush()
-                    raise
+            print >>self.__ofd, " %-45s ==> %20s" % (field, packet[field])
         self.__ofd.flush()
 
 

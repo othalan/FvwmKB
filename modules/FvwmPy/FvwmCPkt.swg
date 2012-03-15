@@ -4,6 +4,7 @@
 #include "fvwm/fvwm.h"
 #include "libs/Module.h"
 #include "libs/vpacket.h"
+#include "fvwm/focus_policy.h"
 
 %}
 
@@ -23,6 +24,10 @@
 %ignore GetConfigLine;
 %ignore module_expand_action;
 %ignore ParseModuleArgs;
+%ignore fpol_init_default_fp;
+%ignore fpol_query_allow_set_focus;
+%ignore fpol_query_allow_user_focus;
+%ignore fpol_is_policy_changed;
 
 // #define constants are normally converted to signed integers,
 // but some should be treated as unsigned integers....
@@ -68,9 +73,15 @@
 %include "fvwm/fvwm.h"
 %include "libs/vpacket.h"
 %include "libs/Module.h"
-
+%include "fvwm/focus_policy.h"
 
 // Extend the C data structures to provide utility functions in Python
+// This adds the following features:
+// - Allow the length of a structre to be determined auto-magically
+// - Allow raw data get/set
+// NOTE:  This is typically only useful in Python for a top-level
+//        structure.  Any structures within structures are typically only
+//        accessed indirectly for this functionality (through the parent).
 
 #define EXTEND_C_PKT(struct_name) \
 %extend struct_name \
@@ -95,7 +106,5 @@
 
 EXTEND_C_PKT(ConfigWinPacket)
 EXTEND_C_PKT(MiniIconPacket)
-EXTEND_C_PKT(window_flags)
-EXTEND_C_PKT(action_flags)
 
 /* vim:set nu et ft=cpp ts=2 sw=2 cino=>2 fo=croq: */

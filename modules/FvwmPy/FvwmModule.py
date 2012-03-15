@@ -199,7 +199,6 @@ of these methods:
                 sys.stderr.flush()
                 continue
 
-            print >>sys.stderr, ''.join(["%02X"%ord(x) for x in packetData])
             pkt.data = packetData
 
             for (packetName, cbFunc) in self.__cbRegistry:

@@ -25,7 +25,7 @@ class FvwmPktBase(ctypes.Structure):
                         None,
                         "Packet data as a character array")
 
-    fields   = property(lambda self  : map(lambda x:x[0].lstrip('_'), self._fields_),
+    fields   = property(lambda self  : self.__getFields(),
                         None,
                         None,
                         "List of structure fields for this packet")
@@ -36,7 +36,7 @@ class FvwmPktBase(ctypes.Structure):
 
     def __setData(self, toSet):
         target=ctypes.cast(ctypes.pointer(self),ctypes.POINTER(ctypes.c_char))
-        for ix in xrange(len(toSet)):
+        for ix in xrange(min(len(toSet),len(self))):
             target[ix]=toSet[ix]
 
     def __len__(self):
@@ -44,15 +44,38 @@ class FvwmPktBase(ctypes.Structure):
 
     def __getitem__(self, key):
         if key in self.fields:
-            getattr(self, key)
+            keypath = key.split(':')
+            if keypath[0] == 'header':
+                value = getattr(self.header, keypath[1])
+            else:
+                value = self
+                for realkey in keypath:
+                    value = getattr(value, realkey)
+            return value
         else:
             raise KeyError, "Invalid Field Name: %s" % key
 
     def __setitem__(self, key, value):
         if key in self.fields:
-            setattr(self, key, value)
+            keypath = key.split(':')
+            if keypath[0] == 'header':
+                setattr(self.header, keypath[1], value)
+            else:
+                obj = self
+                for realkey in keypath[:-1]:
+                    obj = getattr(obj, realkey)
+                setattr(obj, keypath[-1], value)
         else:
             raise KeyError, "Invalid Field Name: %s" % key
+
+    def __getFields(self):
+        if not hasattr(self, '_field_list'):
+            self._field_list = [field[0].lstrip('_') for field in self._fields_]
+            if hasattr(self, 'header'):
+                self._field_list.remove('header')
+                self._field_list.extend(['header:%s'%field for field in self.header.fields])
+            self._field_list.sort()
+        return self._field_list
 
 class FvwmPktHeader(FvwmPktBase):
     """
@@ -89,6 +112,12 @@ NOTE:  The 'length' field represents the total packet length in bytes!
                         None,
                         "Packet Time in Microseconds")
 
+    def __getitem__(self, key):
+        if key == 'raw_length':
+            return getattr(self, key)
+        else:
+            return super(FvwmPktHeader,self).__getitem__(key)
+
 class FvwmSwigMeta(type):
     def __new__(cls, name, bases, dct):
         dct['cstruct'] = property(
@@ -106,7 +135,7 @@ class FvwmSwigMeta(type):
             self.cstruct.data = data[len(self.header):]
         dct['data'] = property(
                     lambda self  : self.header.data + self.cstruct._getData(),
-                    lambda self,x: setPktData(self,data),
+                    lambda self,x: setPktData(self,x),
                     None,
                     "Packet raw data (including header and data portions of the packet)")
         dct['_cstruct']    = dct['_swigClass']()
@@ -123,13 +152,19 @@ class FvwmSwigMeta(type):
                 # to refer to the current loop value of the variable.
                 dct[attr] = property(lambda self,attr=attr  : getattr(self._cstruct, attr),
                                      lambda self,x,attr=attr: setattr(self._cstruct, attr, x))
-                attrVal = getattr(dct['_cstruct'], attr)
-                if hasattr(attrVal, '__swig_getmethods__'):
-                    for field in attrVal.__class__.__dict__.keys():
-                        if not field.startswith('_'):
-                            dct['fields'].append('%s:%s' % (attr, field))
-                else:
-                    dct['fields'].append(attr)
+
+                # Recursively add structure members to the list of available dictionary fields....
+                def addDictVals(obj, toGet, strSoFar):
+                    attrVal = getattr(obj, toGet)
+                    if hasattr(attrVal, '__swig_getmethods__'):
+                        for field in attrVal.__class__.__dict__.keys():
+                            if not field.startswith('_'):
+                                addDictVals(attrVal, field, '%s:%s' % (strSoFar,field))
+                    else:
+                        dct['fields'].append(strSoFar)
+
+                addDictVals(dct['_cstruct'], attr, attr)
+        dct['fields'].sort()
 
         return super(FvwmSwigMeta, cls).__new__(cls, name, bases, dct)
 
@@ -140,8 +175,8 @@ class FvwmSwigMeta(type):
             if keypath[0] == 'header':
                 value = getattr(self.header, keypath[1])
             else:
-                value = self.__cstruct
-                for realkey in keypath[1:]:
+                value = self._cstruct
+                for realkey in keypath:
                     value = getattr(value, realkey)
             return value
         else:
@@ -154,10 +189,10 @@ class FvwmSwigMeta(type):
             if keypath[0] == 'header':
                 setattr(self.header, keypath[1], value)
             else:
-                obj = self.__cstruct
-                for realkey in keypath[1:]:
+                obj = self._cstruct
+                for realkey in keypath[:-1]:
                     obj = getattr(obj, realkey)
-                setattr(obj, key, value)
+                setattr(obj, keypath[-1], value)
         else:
             raise KeyError, "Invalid Field Name: %s" % key
 
