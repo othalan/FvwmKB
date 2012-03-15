@@ -36,6 +36,10 @@
   %set_constant("$symname", PyLong_FromUnsignedLong($value));
 }
 
+// Raw data get/set methods need different C and Python behavior for the
+// function calls.  The  following typemaps make everything behave as
+// expected/needed in each scenario.
+
 %typemap(in) (char *rawDataSet, size_t rawDataLen) {
   if (!PyString_Check($input)) {
     PyErr_SetString(PyExc_ValueError, "Expecting a string");
@@ -68,44 +72,30 @@
 
 // Extend the C data structures to provide utility functions in Python
 
-%extend ConfigWinPacket
-{
-  int __len__()
-  {
-    return sizeof(ConfigWinPacket);
-  }
-
-  void __setData(char* rawDataSet, size_t rawDataLen)
-  {
-    memcpy($self, rawDataSet, (rawDataLen < sizeof(ConfigWinPacket) ? rawDataLen : sizeof(ConfigWinPacket)));
-  }
-
-  int __getData(char** rawDataGet)
-  {
-    *rawDataGet=malloc(sizeof(ConfigWinPacket));
-    memcpy(*rawDataGet, $self, sizeof(ConfigWinPacket));
-    return sizeof(ConfigWinPacket);
-  }
+#define EXTEND_C_PKT(struct_name) \
+%extend struct_name \
+{ \
+  int __len__() \
+  { \
+    return sizeof(struct_name); \
+  } \
+ \
+  void _setData(char* rawDataSet, size_t rawDataLen) \
+  { \
+    memcpy($self, rawDataSet, (rawDataLen < sizeof(struct_name) ? rawDataLen : sizeof(struct_name))); \
+  } \
+ \
+  int _getData(char** rawDataGet) \
+  { \
+    *rawDataGet=malloc(sizeof(struct_name)); \
+    memcpy(*rawDataGet, $self, sizeof(struct_name)); \
+    return sizeof(struct_name); \
+  } \
 };
 
-%extend MiniIconPacket
-{
-  int __len__()
-  {
-    return sizeof(MiniIconPacket);
-  }
-
-  void __setData(char* rawDataSet, size_t rawDataLen)
-  {
-    memcpy($self, rawDataSet, (rawDataLen < sizeof(MiniIconPacket) ? rawDataLen : sizeof(MiniIconPacket)));
-  }
-
-  int __getData(char** rawDataGet)
-  {
-    *rawDataGet=malloc(sizeof(MiniIconPacket));
-    memcpy(*rawDataGet, $self, sizeof(MiniIconPacket));
-    return sizeof(MiniIconPacket);
-  }
-};
+EXTEND_C_PKT(ConfigWinPacket)
+EXTEND_C_PKT(MiniIconPacket)
+EXTEND_C_PKT(window_flags)
+EXTEND_C_PKT(action_flags)
 
 /* vim:set nu et ft=cpp ts=2 sw=2 cino=>2 fo=croq: */

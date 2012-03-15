@@ -19,7 +19,42 @@ class FvwmWindowIdentity(ctypes.Structure):
                 ("frameId"    , ctypes.c_int32 ),
                 ("fvwmDbEntry", ctypes.c_uint32)]
 
-class FvwmPktHeader(ctypes.Structure):
+class FvwmPktBase(ctypes.Structure):
+    data     = property(lambda self  : self.__getData(),
+                        lambda self,x: self.__setData(x),
+                        None,
+                        "Packet data as a character array")
+
+    fields   = property(lambda self  : map(lambda x:x[0].lstrip('_'), self._fields_),
+                        None,
+                        None,
+                        "List of structure fields for this packet")
+
+    def __getData(self):
+        source=ctypes.cast(ctypes.pointer(self),ctypes.POINTER(ctypes.c_char))
+        return ''.join([source[ix] for ix in xrange(len(self))])
+
+    def __setData(self, toSet):
+        target=ctypes.cast(ctypes.pointer(self),ctypes.POINTER(ctypes.c_char))
+        for ix in xrange(len(toSet)):
+            target[ix]=toSet[ix]
+
+    def __len__(self):
+        return ctypes.sizeof(self)
+
+    def __getitem__(self, key):
+        if key in self.fields:
+            getattr(self, key)
+        else:
+            raise KeyError, "Invalid Field Name: %s" % key
+
+    def __setitem__(self, key, value):
+        if key in self.fields:
+            setattr(self, key, value)
+        else:
+            raise KeyError, "Invalid Field Name: %s" % key
+
+class FvwmPktHeader(FvwmPktBase):
     """
 FVWM Packet Header Structure
 
@@ -32,11 +67,6 @@ NOTE:  The 'length' field represents the total packet length in bytes!
                 ("_type"    , ctypes.c_uint32),
                 ("_length"  , ctypes.c_uint32),
                 ("_time"    , ctypes.c_uint32)]
-
-    data     = property(lambda self  : self.__getData(),
-                        lambda self,x: self.__setData(x),
-                        None,
-                        "Packet data as a character array")
 
     syncpat  = property(lambda self  : self._syncpat,
                         lambda self,x: self.__setattr__("_syncpat", x),
@@ -58,40 +88,85 @@ NOTE:  The 'length' field represents the total packet length in bytes!
                         lambda self,x: self.__setattr__("_time", x),
                         None,
                         "Packet Time in Microseconds")
-    fields   = property(lambda self  : map(lambda x:x[0].lstrip('_'), self._fields_),
-                        None,
-                        None,
-                        "List of structure fields for this packet")
 
-    def __getData(self):
-        source=ctypes.cast(ctypes.pointer(self),ctypes.POINTER(ctypes.c_char))
-        return ''.join([source[ix] for ix in xrange(len(self))])
+class FvwmSwigMeta(type):
+    def __new__(cls, name, bases, dct):
+        dct['cstruct'] = property(
+                    lambda self  : self._cstruct,
+                    None,
+                    None,
+                    "SWIG C Structure direct access")
+        dct['header'] = property(
+                    lambda self  : self._header,
+                    lambda self,x: setattr(self,'_header',x),
+                    None,
+                    "Packet header structure")
+        def setPktData(self, data):
+            self.header.data  = data[:len(self.header)]
+            self.cstruct.data = data[len(self.header):]
+        dct['data'] = property(
+                    lambda self  : self.header.data + self.cstruct._getData(),
+                    lambda self,x: setPktData(self,data),
+                    None,
+                    "Packet raw data (including header and data portions of the packet)")
+        dct['_cstruct']    = dct['_swigClass']()
+        dct['header']      = FvwmPktHeader()
+        dct['fields']      = ['header:%s'%field for field in dct['header'].fields]
+        dct['__getitem__'] = cls.__getitem
+        dct['__setitem__'] = cls.__setitem
 
-    def __setData(self, toSet):
-        target=ctypes.cast(ctypes.pointer(self),ctypes.POINTER(ctypes.c_char))
-        for ix in xrange(len(toSet)):
-            target[ix]=toSet[ix]
+        for attr in dct['_swigClass'].__dict__.keys():
+            if not attr.startswith('_'):
+                # Note that the lambda function would normally use the global
+                # scope 'attr' variable (thus referring to the last item in the
+                # loop), so we must copy it to the lambda function local scope
+                # to refer to the current loop value of the variable.
+                dct[attr] = property(lambda self,attr=attr  : getattr(self._cstruct, attr),
+                                     lambda self,x,attr=attr: setattr(self._cstruct, attr, x))
+                attrVal = getattr(dct['_cstruct'], attr)
+                if hasattr(attrVal, '__swig_getmethods__'):
+                    for field in attrVal.__class__.__dict__.keys():
+                        if not field.startswith('_'):
+                            dct['fields'].append('%s:%s' % (attr, field))
+                else:
+                    dct['fields'].append(attr)
 
-    def __len__(self):
-        return ctypes.sizeof(self)
+        return super(FvwmSwigMeta, cls).__new__(cls, name, bases, dct)
 
-    def __getitem__(self, key):
-        if key in self.fields or key == 'raw_length':
-            return self.__getattribute__(key)
+    @staticmethod
+    def __getitem(self, key):
+        if key in self.fields:
+            keypath = key.split(':')
+            if keypath[0] == 'header':
+                value = getattr(self.header, keypath[1])
+            else:
+                value = self.__cstruct
+                for realkey in keypath[1:]:
+                    value = getattr(value, realkey)
+            return value
         else:
             raise KeyError, "Invalid Field Name: %s" % key
 
+    @staticmethod
+    def __setitem(self, key, value):
+        if key in self.fields:
+            keypath = key.split(':')
+            if keypath[0] == 'header':
+                setattr(self.header, keypath[1], value)
+            else:
+                obj = self.__cstruct
+                for realkey in keypath[1:]:
+                    obj = getattr(obj, realkey)
+                setattr(obj, key, value)
+        else:
+            raise KeyError, "Invalid Field Name: %s" % key
+
+class FvwmPkt_M_ADD_WINDOW(object):
+    __metaclass__ = FvwmSwigMeta
+    _swigClass    = FvwmCPkt.ConfigWinPacket
+
 ################################################################################
 # Packet Definitions:
-#
-# "PKT_NAME" = {
-#     'pktType': FVWM_PKT_ID,
-#     'fields': FVWM_PKT_CONTENT,
-# }
-#
-# FVWM_PKT_CONTENT = {
-#    VAR_NAME: [BYTE_OFFSET, BYTE_LENGTH, DATA_TYPE],
-# }
 
 PacketTypes = {
    FvwmCPkt.M_NEW_PAGE: {
@@ -487,24 +562,19 @@ def __build_field_str(pktDef):
 def __createCtypeStruct(pktDef):
     pktDefDict = pktDef
     ctypes_packet_class = """
-global FvwmPkt_%(name)s_Struct
+global FvwmPkt_%(name)s
 global %(name)s
 
 # Create a constant for this packet name
 %(name)s = %(id)s
 
 # Create a class structure for this packet
-class FvwmPkt_%(name)s(ctypes.Structure):
+class FvwmPkt_%(name)s(FvwmPktBase):
     __doc__  = "%(doc)s"
     _fields_ = %(field_str)s
     _name    = "%(name)s"
     _id      = %(id)s
     _type    = "%(type)s"
-
-    data     = property(lambda self  : self.__getData(),
-                        lambda self,x: self.__setData(x),
-                        None,
-                        "Packet data as a character array")
 
     name     = property(lambda self  : self._name,
                         None,
@@ -514,31 +584,10 @@ class FvwmPkt_%(name)s(ctypes.Structure):
                         None,
                         None,
                         "Packet ID Value (from FVWM Header Files)")
-    fields   = property(lambda self  : map(lambda x:x[0].lstrip('_'), self._fields_),
-                        None,
-                        None,
-                        "List of structure fields for this packet")
     type     = property(lambda self  : self._type,
                         None,
                         None,
                         "Packet definition type code")
-
-    def __getData(self):
-        source=ctypes.cast(ctypes.pointer(self),ctypes.POINTER(ctypes.c_char))
-        return ''.join([source[ix] for ix in xrange(len(self))])
-
-    def __setData(self, toSet):
-        target=ctypes.cast(ctypes.pointer(self),ctypes.POINTER(ctypes.c_char))
-        for ix in xrange(len(toSet)):
-            target[ix]=toSet[ix]
-    def __len__(self):
-        return ctypes.sizeof(self)
-
-    def __getitem__(self, key):
-        if key in self.fields:
-            return self.__getattribute__(key)
-        else:
-            raise KeyError, "Invalid Field Name: %%s" %% key
 """
     __build_field_str(pktDef)
     code = compile(ctypes_packet_class % pktDef, "<string>", "exec")
