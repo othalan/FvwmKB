@@ -161,10 +161,6 @@ class FvwmSwigMeta(type):
         else:
             raise KeyError, "Invalid Field Name: %s" % key
 
-class FvwmPkt_M_ADD_WINDOW(object):
-    __metaclass__ = FvwmSwigMeta
-    _swigClass    = FvwmCPkt.ConfigWinPacket
-
 ################################################################################
 # Packet Definitions:
 
@@ -559,8 +555,39 @@ def __build_field_str(pktDef):
     fieldStr += ']'
     pktDef['field_str'] = fieldStr
 
+def __createSwigStrict(pktDef):
+    swig_packet_class = """
+global FvwmPkt_%(name)s
+global %(name)s
+
+%(name)s = %(id)s
+
+class FvwmPkt_%(name)s(object):
+    __metaclass__ = FvwmSwigMeta
+    __doc__       = "%(doc)s"
+    _swigClass    = %(swigType)s
+    _name         = "%(name)s"
+    _id           = %(id)s
+    _type         = "%(type)s"
+
+    name     = property(lambda self  : self._name,
+                        None,
+                        None,
+                        "Packet Name (from FVWM Documentation)")
+    id       = property(lambda self  : self._id,
+                        None,
+                        None,
+                        "Packet ID Value (from FVWM Header Files)")
+    type     = property(lambda self  : self._type,
+                        None,
+                        None,
+                        "Packet definition type code")
+"""
+    code = compile(swig_packet_class % pktDef, "<string>", "exec")
+    exec code in globals(), locals()
+    pktDef['class'] = eval('FvwmPkt_%(name)s' % pktDef)
+
 def __createCtypeStruct(pktDef):
-    pktDefDict = pktDef
     ctypes_packet_class = """
 global FvwmPkt_%(name)s
 global %(name)s
@@ -616,7 +643,7 @@ def getFvwmPktObj(pktType, pktLen = -1):
         __createCtypeStruct(pktDict)
 
     elif not pktDict.has_key('class') and pktDict['type'] == PKT_TYPE_SWIG:
-        raise NotImplementedError, "ERROR:  Swig Classes Not Yet Implemented!"
+        __createSwigStrict(pktDict)
 
     # Create the object and return it
     return pktDict['class']()

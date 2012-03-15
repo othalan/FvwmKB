@@ -199,12 +199,8 @@ of these methods:
                 sys.stderr.flush()
                 continue
 
-            if pkt.type == FvwmPkt.PKT_TYPE_SWIG:
-                print >>sys.stderr,"Unsupported Packet: %08X" % pkt.type
-                continue
-                #pkt.cPktSet(packetData)
-            else:
-                pkt.data = packetData
+            print >>sys.stderr, ''.join(["%02X"%ord(x) for x in packetData])
+            pkt.data = packetData
 
             for (packetName, cbFunc) in self.__cbRegistry:
                 if packetName == pkt.name or packetName == '*':
