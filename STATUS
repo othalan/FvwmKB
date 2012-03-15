@@ -1,4 +1,8 @@
 2012/03/14:
+  - All module communication completed and seems to be working
+  - Note that SWIG packets have been wrapped to look like non-swig packets from
+    the point of view of usage (may need additional tweaks)
+2012/03/14:
   - Module communication protocol is working for all non-swig packets
   - SWIG packet data can be get/set
   - SWIG packets need a wrapper class to make them look like non-swig packets
