@@ -1,9 +1,13 @@
+# This file contains FVWM Path configurations
+
+# Image Path:  Look for icons in these locations
 ImagePath   $[FVWM_USERDIR]/icons
 ImagePath +:$[FVWM_USERDIR]/icons/$[IconTheme]
 ImagePath +:$[FVWM_SYSTEMDIR]/icons
 ImagePath +:$[FVWM_SYSTEMDIR]/icons/$[IconTheme]
 
 ImagePath +:/usr/share/pixmaps
+ImagePath +:/usr/share/pixmaps/fvwm
 ImagePath +:/usr/X11R6/include/X11/pixmaps
 
 # Lots of icon subdirectories under /usr/share/icons....

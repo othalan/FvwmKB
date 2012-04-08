@@ -1,0 +1,80 @@
+# ==============================================================================
+# Key and Mouse Binding Modifiers
+# ==============================================================================
+# All key bindings are set to use one of the following key binding modifiers.
+# For keys bound to each modifier see the files in the 'bindings' subdirectory.
+#
+# The binding codes are defined as follows
+#   N   No Additional Key Binding
+#   M   Meta Key (typically Alt)
+#   C   Control Key
+#   S   Shift Key
+#   L   Caps-Lock (ignored by default, see fvwm(1) man page)
+#   A   Any Modifier
+#   1   X11 MOD1 Modifier
+#   2   X11 MOD1 Modifier
+#   3   X11 MOD1 Modifier
+#   4   X11 MOD1 Modifier (typically the "Windows" key)
+#   5   X11 MOD1 Modifier
+
+SetEnv Mod0 N
+SetEnv Mod1 4
+SetEnv Mod2 M
+SetEnv Mod3 C
+SetEnv Mod4 SC
+
+# ==============================================================================
+# Helper Functions
+# ==============================================================================
+
+DestroyFunc WindowListCycle
+AddToFunc   WindowListCycle
++ I Focus
++ I Test ($[RaiseOnKBFocusChange]) Raise
+
+DestroyFunc WindowListFlip
+AddToFunc   WindowListFlip
++ I FlipFocus
++ I Test ($[RaiseOnKBFocusChange]) Raise
+
+DestroyFunc BindKeyMod0
+AddToFunc   BindKeyMod0
++ I Key $[0] A $[Mod0] $[1-]
+
+DestroyFunc BindKeyMod1
+AddToFunc   BindKeyMod1
++ I Key $[0] A $[Mod1] $[1-]
+
+DestroyFunc BindKeyMod2
+AddToFunc   BindKeyMod2
++ I Key $[0] A $[Mod2] $[1-]
+
+DestroyFunc BindKeyMod3
+AddToFunc   BindKeyMod3
++ I Key $[0] A $[Mod3] $[1-]
+
+DestroyFunc BindKeyMod4
+AddToFunc   BindKeyMod4
++ I Key $[0] A $[Mod4] $[1-]
+
+DestroyFunc BindMouseMod0
+AddToFunc   BindMouseMod0
++ I Key $[0] A $[Mod0] $[1-]
+
+DestroyFunc BindMouseMod1
+AddToFunc   BindMouseMod1
++ I Key $[0] A $[Mod1] $[1-]
+
+DestroyFunc BindMouseMod2
+AddToFunc   BindMouseMod2
++ I Key $[0] A $[Mod2] $[1-]
+
+DestroyFunc BindMouseMod3
+AddToFunc   BindMouseMod3
++ I Key $[0] A $[Mod3] $[1-]
+
+DestroyFunc BindMouseMod4
+AddToFunc   BindMouseMod4
++ I Key $[0] A $[Mod4] $[1-]
+
+# vim:set ft=fvwm tw=80:

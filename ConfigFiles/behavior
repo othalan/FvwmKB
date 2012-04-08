@@ -1,0 +1,7 @@
+# ==============================================================================
+# Define variables which modify the window manager behavior
+# ==============================================================================
+
+#SetEnv RaiseOnKBFocusChange False
+
+# vim:set ft=fvwm tw=80:

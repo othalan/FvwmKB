@@ -1,0 +1,9 @@
+# ==============================================================================
+# Helper Applications
+# ==============================================================================
+
+SetEnv APP_DMENU /usr/bin/dmenu
+SetEnv APP_DMENU_RUN /usr/bin/dmenu_run
+SetEnv APP_DMENU_PATH /usr/bin/dmenu_path
+
+# vim:set ft=fvwm tw=9999:

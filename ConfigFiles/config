@@ -1,0 +1,32 @@
+# ==============================================================================
+# FVWM Global Configuration File
+#
+# This is the entry to the FVWM configuration files.  It contains configuration
+# parameters that might effect everything else, then calls the configuration
+# files in the correct order.
+# ==============================================================================
+
+# ==============================================================================
+# Directory Paths
+# ==============================================================================
+
+# Set FvwmKB Configuration Directory
+SetEnv FVWMKB_CONFIG_DIR $[FVWM_USERDIR]/FvwmKB/ConfigFiles
+
+# Preference File Location
+#SetEnv FVWM_USER_PREFERENCES   $[FVWM_USERDIR]/preferences
+#SetEnv FVWM_SYSTEM_PREFERENCES $[FVWM_SYSTEMDIR]/preferences
+#SetEnv FVWM_CONFIG_PREFERENCES $[FVWM_CONFIGDIR]/preferences
+
+# ==============================================================================
+# Load Configuration Files
+# ==============================================================================
+
+Test (R $[FVWMKB_CONFIG_DIR]/behavior   ) Read $[FVWMKB_CONFIG_DIR]/behavior
+Test (R $[FVWMKB_CONFIG_DIR]/style      ) Read $[FVWMKB_CONFIG_DIR]/style
+Test (R $[FVWMKB_CONFIG_DIR]/paths      ) Read $[FVWMKB_CONFIG_DIR]/paths
+Test (R $[FVWMKB_CONFIG_DIR]/bind-Setup ) Read $[FVWMKB_CONFIG_DIR]/bind-Setup
+Test (R $[FVWMKB_CONFIG_DIR]/bind-Define) Read $[FVWMKB_CONFIG_DIR]/bind-Define
+Test (R $[FVWMKB_CONFIG_DIR]/startup    ) Read $[FVWMKB_CONFIG_DIR]/startup
+
+# vim:set ft=fvwm tw=9999:

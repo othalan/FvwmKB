@@ -1,0 +1,43 @@
+# ==============================================================================
+# Keyboard and Mouse Bindings
+# ==============================================================================
+
+# ==============================================================================
+# Mouse Bindings
+#
+# USAGE:  Mouse [(window)] Button Context Modifiers Function
+# ==============================================================================
+
+# ==============================================================================
+# Keyboard Bindings
+#
+# USAGE:  Key [(window)] Button Context Modifiers Function
+#
+# Common Keys:
+#   A  - Z
+#   0  - 9
+#   F1 - F12
+#   Left, Right, Up, Down
+#   space
+#   KP_Enter, KP_Home, KP_Left, KP_Up, KP_Right, KP_Down, KP_Prior, KP_Page_Up
+#   KP_Next, KP_Page_Down, KP_End, KP_Begin, KP_Insert, KP_Delete, KP_Multiply
+#   KP_Add, KP_Subtract, KP_Decimal, KP_Divide
+#
+# ==============================================================================
+
+BindKeyMod1 H GotoDesk -1
+BindKeyMod1 L GotoDesk  1
+BindKeyMod1 J Prev (CurrentDesk, AcceptsFocus) WindowListCycle
+BindKeyMod1 K Next (CurrentDesk, AcceptsFocus) WindowListCycle
+
+BindKeyMod2 F       Maximize toggle
+BindKeyMod2 H       Direction West  (CurrentDesk, AcceptsFocus) WindowListFlip
+BindKeyMod2 J       Direction South (CurrentDesk, AcceptsFocus) WindowListFlip
+BindKeyMod2 K       Direction North (CurrentDesk, AcceptsFocus) WindowListFlip
+BindKeyMod2 L       Direction East  (CurrentDesk, AcceptsFocus) WindowListFlip
+BindKeyMod2 V       Exec exec /usr/bin/gvim
+BindKeyMod2 Return  Exec exec /usr/bin/mrxvt
+
+BindKeyMod4 R Restart
+
+# vim:set ft=fvwm:
