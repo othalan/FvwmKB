@@ -1,0 +1,15 @@
+# ==============================================================================
+# Color Configuration Variables
+# ==============================================================================
+
+SetEnv COLOR_DMENU_NORMAL_FOREGROUND \\\\#000000
+SetEnv COLOR_DMENU_NORMAL_BACKGROUND \\\\#777799
+SetEnv COLOR_DMENU_SELECT_FOREGROUND \\\\#FFFFFF
+SetEnv COLOR_DMENU_SELECT_BACKGROUND \\\\#3333BB
+
+SetEnv WINDOW_BORDER_WIDTH  1
+SetEnv WINDOW_TITLE_HEIGHT 15
+
+
+
+# vim:set ft=fvwm tw=9999:

@@ -2,6 +2,17 @@
 # Define variables which modify the window manager behavior
 # ==============================================================================
 
-#SetEnv RaiseOnKBFocusChange False
+SetEnv RAISE_ON_KB_FOCUS_CHANGE True
+SetEnv DMENU_LOCATION_BOTTOM    True
+
+# ==============================================================================
+# DO NOT EDIT BELOW THIS LINE!
+#
+# The rest of the file uses the above variables to change the behavior of the
+# window manager.  Modify this code at your own risk!
+# ==============================================================================
+
+# Setup DMENU command-line flag to move the location to the bottom of the screen
+Test ($[DMENU_LOCATION_BOTTOM]) SetEnv DMENU_LOCATION_FLAG -b
 
 # vim:set ft=fvwm tw=80:

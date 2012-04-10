@@ -23,8 +23,11 @@ SetEnv FVWMKB_CONFIG_DIR $[FVWM_USERDIR]/FvwmKB/ConfigFiles
 # ==============================================================================
 
 Test (R $[FVWMKB_CONFIG_DIR]/behavior   ) Read $[FVWMKB_CONFIG_DIR]/behavior
+Test (R $[FVWMKB_CONFIG_DIR]/colors     ) Read $[FVWMKB_CONFIG_DIR]/colors
+Test (R $[FVWMKB_CONFIG_DIR]/theme      ) Read $[FVWMKB_CONFIG_DIR]/theme
 Test (R $[FVWMKB_CONFIG_DIR]/style      ) Read $[FVWMKB_CONFIG_DIR]/style
 Test (R $[FVWMKB_CONFIG_DIR]/paths      ) Read $[FVWMKB_CONFIG_DIR]/paths
+Test (R $[FVWMKB_CONFIG_DIR]/apps       ) Read $[FVWMKB_CONFIG_DIR]/apps
 Test (R $[FVWMKB_CONFIG_DIR]/bind-Setup ) Read $[FVWMKB_CONFIG_DIR]/bind-Setup
 Test (R $[FVWMKB_CONFIG_DIR]/bind-Define) Read $[FVWMKB_CONFIG_DIR]/bind-Define
 Test (R $[FVWMKB_CONFIG_DIR]/startup    ) Read $[FVWMKB_CONFIG_DIR]/startup

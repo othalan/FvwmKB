@@ -2,7 +2,15 @@
 # Define FVWM Styles
 # ==============================================================================
 
-Style ClickToFocus
-Style ClickToFocusRaises
+# Mouse Behavior Settings
+Style * ClickToFocus
+Style * ClickToFocusRaises
+
+# Window Border Settings
+Style * BorderWidth $[WINDOW_BORDER_WIDTH]
+Style * HandleWidth $[WINDOW_BORDER_WIDTH]
+TitleStyle Centered Height $[WINDOW_TITLE_HEIGHT]
+TitleStyle -- Raised
+Style * Font "-*-fixed-medium-r-*-*-13-*-*-*-*-*-*-*"
 
 # vim:set ft=fvwm tw=80:

@@ -30,12 +30,12 @@ SetEnv Mod4 SC
 DestroyFunc WindowListCycle
 AddToFunc   WindowListCycle
 + I Focus
-+ I Test ($[RaiseOnKBFocusChange]) Raise
++ I Test ($[RAISE_ON_KB_FOCUS_CHANGE]) Raise
 
 DestroyFunc WindowListFlip
 AddToFunc   WindowListFlip
 + I FlipFocus
-+ I Test ($[RaiseOnKBFocusChange]) Raise
++ I Test ($[RAISE_ON_KB_FOCUS_CHANGE]) Raise
 
 DestroyFunc BindKeyMod0
 AddToFunc   BindKeyMod0

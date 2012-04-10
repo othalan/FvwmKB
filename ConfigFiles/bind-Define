@@ -27,14 +27,19 @@
 
 BindKeyMod1 H GotoDesk -1
 BindKeyMod1 L GotoDesk  1
-BindKeyMod1 J Prev (CurrentDesk, AcceptsFocus) WindowListCycle
-BindKeyMod1 K Next (CurrentDesk, AcceptsFocus) WindowListCycle
+BindKeyMod1 J Next (CurrentDesk, AcceptsFocus) WindowListCycle
+BindKeyMod1 K Prev (CurrentDesk, AcceptsFocus) WindowListCycle
 
 BindKeyMod2 F       Maximize toggle
 BindKeyMod2 H       Direction West  (CurrentDesk, AcceptsFocus) WindowListFlip
 BindKeyMod2 J       Direction South (CurrentDesk, AcceptsFocus) WindowListFlip
 BindKeyMod2 K       Direction North (CurrentDesk, AcceptsFocus) WindowListFlip
 BindKeyMod2 L       Direction East  (CurrentDesk, AcceptsFocus) WindowListFlip
+BindKeyMod2 P       Exec exec $[APP_DMENU_RUN] -nf $[COLOR_DMENU_NORMAL_FOREGROUND] \
+                                               -nb $[COLOR_DMENU_NORMAL_BACKGROUND] \
+                                               -sf $[COLOR_DMENU_SELECT_FOREGROUND] \
+                                               -sb $[COLOR_DMENU_SELECT_BACKGROUND] \
+                                               $[DMENU_LOCATION_FLAG]
 BindKeyMod2 V       Exec exec /usr/bin/gvim
 BindKeyMod2 Return  Exec exec /usr/bin/mrxvt
 
